@@ -21,11 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = sanitize($_POST['name']);
         $phone = sanitize($_POST['phone']);
         $department = sanitize($_POST['department']);
-        $class = (int) $_POST['class'];
 
         try {
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, department = ?, class = ? WHERE user_id = ?");
-            $stmt->execute([$name, $phone, $department, $class, $user_id]);
+            $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, department = ? WHERE user_id = ?");
+            $stmt->execute([$name, $phone, $department, $user_id]);
 
             $_SESSION['name'] = $name;
             logActivity('profile_update', 'Updated profile information');
@@ -62,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $borrow_stats = $pdo->prepare("
     SELECT 
         COUNT(*) as total_borrows,
-        COALESCE(SUM(status = 'returned'), 0) as books_read,
-        COALESCE(SUM(status IN ('issued', 'overdue')), 0) as current_borrows
+        SUM(status = 'returned') as books_read,
+        SUM(status IN ('issued', 'overdue')) as current_borrows
     FROM issued_books WHERE user_id = ?
 ");
 $borrow_stats->execute([$user_id]);
@@ -162,15 +161,6 @@ require_once '../includes/header.php';
                                     foreach ($departments as $dept): ?>
                                         <option value="<?php echo $dept; ?>" <?php echo $user['department'] == $dept ? 'selected' : ''; ?>><?php echo $dept; ?></option>
                                     <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="form-label">Class</label>
-                                <select name="class" class="form-control">
-                                    <option value="">Select Class</option>
-                                    <option value="11" <?php echo $user['class'] == 11 ? 'selected' : ''; ?>>Class 11</option>
-                                    <option value="12" <?php echo $user['class'] == 12 ? 'selected' : ''; ?>>Class 12</option>
                                 </select>
                             </div>
                         </div>

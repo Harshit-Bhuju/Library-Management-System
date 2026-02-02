@@ -22,7 +22,7 @@ A production-ready Library Management System built with Core PHP, MySQL, and Van
 
 1. Open `config/db.php` and `config/config.php`.
 2. Update `DB_PASS` if your MySQL root password is not empty.
-3. Update `BASE_URL` if your project is not at `http://localhost/library-system/`.
+3. Update `BASE_URL` in `config/config.php` if your project folder is not named `library-management-system`. The host/domain is detected automatically.
 
 ### 3. Usage
 

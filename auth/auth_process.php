@@ -11,34 +11,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         try {
             // Check by email OR roll_no
+            // Logic: Admins usually log in by email via 'identifier'. Students might use email or roll_no.
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? OR roll_no = ?");
             $stmt->execute([$identifier, $identifier]);
             $user = $stmt->fetch();
 
-            if ($user && password_verify($password, $user['password'])) {
-                // Success
-                if ($user['is_active'] == 0) {
-                    setFlash('error', 'Your account is deactivated. Contact admin.');
+            if ($user) {
+                if (password_verify($password, $user['password'])) {
+                    // Success
+                    if ($user['is_active'] == 0) {
+                        setFlash('error', 'Your account has been deactivated. Please contact the administrator.');
+                        redirect('index.php');
+                    }
+
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['roll_no'] = $user['roll_no'] ?? null; // Admins might not have roll_no
+
+                    if ($user['role'] == 'admin') {
+                        redirect('admin/dashboard.php');
+                    } else {
+                        redirect('student/dashboard.php');
+                    }
+                } else {
+                    // User exists but wrong password
+                    setFlash('error', 'Incorrect password. Please try again.');
                     redirect('index.php');
                 }
 
-                $_SESSION['user_id'] = $user['user_id'];
-                $_SESSION['name'] = $user['name'];
-                $_SESSION['role'] = $user['role'];
-                $_SESSION['roll_no'] = $user['roll_no'];
-
-                if ($user['role'] == 'admin') {
-                    redirect('admin/dashboard.php');
-                } else {
-                    redirect('student/dashboard.php');
-                }
-
             } else {
-                setFlash('error', 'Invalid credentials');
+                // User not found
+                setFlash('error', 'No account found with that Email or Roll No.');
                 redirect('index.php');
             }
         } catch (Exception $e) {
-            setFlash('error', 'System error: ' . $e->getMessage());
+            setFlash('error', 'System Login Error: ' . $e->getMessage());
             redirect('index.php');
         }
     }

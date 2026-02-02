@@ -42,7 +42,7 @@ require_once '../includes/header.php';
                             <th>Roll No</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Dept / Year</th>
+                            <th>Dept / Class</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -53,7 +53,7 @@ require_once '../includes/header.php';
                             <td><?php echo htmlspecialchars($student['roll_no']); ?></td>
                             <td><?php echo htmlspecialchars($student['name']); ?></td>
                             <td><?php echo htmlspecialchars($student['email']); ?></td>
-                            <td><?php echo htmlspecialchars($student['department'] ?? '-'); ?> / <?php echo htmlspecialchars($student['year'] ?? '-'); ?></td>
+                            <td><?php echo htmlspecialchars($student['department'] ?? '-'); ?> / Class <?php echo htmlspecialchars($student['year'] ?? '-'); ?></td>
                             <td>
                                 <?php if($student['is_active']): ?>
                                     <span style="color: var(--success); font-weight: 600;">Active</span>

@@ -42,8 +42,8 @@ require_once '../includes/header.php';
                     <div class="form-control" readonly><?php echo htmlspecialchars($user['department']); ?></div>
                 </div>
                 <div>
-                    <label class="form-label">Year</label>
-                    <div class="form-control" readonly><?php echo htmlspecialchars($user['year']); ?></div>
+                    <label class="form-label">Class</label>
+                    <div class="form-control" readonly>Class <?php echo htmlspecialchars($user['year']); ?></div>
                 </div>
             </div>
             

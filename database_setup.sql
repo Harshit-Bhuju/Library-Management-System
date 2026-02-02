@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(15),
     password VARCHAR(255) NOT NULL,
-    department VARCHAR(50),
-    year INT,
+    department VARCHAR(50), -- e.g., 'Physical Science', 'Management'
+    year INT, -- Stores 11 or 12
     role ENUM('student', 'admin') DEFAULT 'student',
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

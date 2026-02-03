@@ -31,10 +31,11 @@ define('REMEMBER_ME_DAYS', 30);  // Days for persistent login
 define('CSRF_TOKEN_NAME', 'csrf_token');
 
 // Library Rules (defaults, can be overridden by system_settings table)
-define('DEFAULT_BORROW_DAYS', 14);
-define('DEFAULT_FINE_PER_DAY', 0.50);
+define('DEFAULT_BORROW_DAYS', 15);
+define('DEFAULT_FINE_PER_DAY', 10);
 define('MAX_BOOKS_STUDENT', 3);
 define('MAX_BOOKS_TEACHER', 5);
+define('CURRENCY_SYMBOL', 'NPR');
 
 // Upload Configuration
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');

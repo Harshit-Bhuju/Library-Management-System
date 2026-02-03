@@ -72,7 +72,6 @@ require_once 'includes/header.php';
                         <input type="checkbox" name="remember_me" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 accent-primary-600">
                         <span class="ml-2">Remember me</span>
                     </label>
-                    <a href="#" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all transform hover:-translate-y-0.5 hover:shadow-lg">

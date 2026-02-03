@@ -166,21 +166,21 @@ require_once '../includes/header.php';
                     <div class="relative">
                         <input type="text" name="search" placeholder="Search by name or email..."
                             value="<?php echo e($search); ?>"
-                            class="form-control pl-10">
+                            class="form-control pl-10 pr-20">
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-sm btn-secondary">
+                            Search
+                        </button>
                         <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
                 <div class="w-40">
-                    <select name="role" class="form-control">
+                    <select name="role" class="form-control" onchange="this.form.submit()">
                         <option value="">All Roles</option>
                         <option value="student" <?php echo $role_filter === 'student' ? 'selected' : ''; ?>>Students</option>
-                        <option value="teacher" <?php echo $role_filter === 'teacher' ? 'selected' : ''; ?>>Teachers</option>
                         <option value="admin" <?php echo $role_filter === 'admin' ? 'selected' : ''; ?>>Admins</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fa-solid fa-filter"></i> Filter
-                </button>
+                <!-- Filter button removed - Auto filtering enabled -->
                 <?php if ($search || $role_filter): ?>
                     <a href="manage_students.php" class="btn btn-outline">Clear</a>
                 <?php endif; ?>
@@ -232,7 +232,7 @@ require_once '../includes/header.php';
                                     <td class="text-sm"><?php echo formatDate($user['created_at'], 'M j, Y'); ?></td>
                                     <td>
                                         <div class="flex gap-2">
-                                            <form method="POST" class="inline">
+                                            <form method="POST" class="inline" onsubmit="return confirmAction(event, 'Change this user\'s active status?', 'Confirm Status Change', 'primary')">
                                                 <input type="hidden" name="toggle_status" value="1">
                                                 <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
                                                 <?php echo csrfInput(); ?>
@@ -242,7 +242,7 @@ require_once '../includes/header.php';
                                             </form>
 
                                             <?php if ($user['role'] !== 'admin'): ?>
-                                                <form method="POST" class="inline" onsubmit="return confirmDelete('Delete this user?')">
+                                                <form method="POST" class="inline" onsubmit="return confirmAction(event, 'Delete this user?')">
                                                     <input type="hidden" name="delete_user" value="1">
                                                     <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
                                                     <?php echo csrfInput(); ?>
@@ -322,7 +322,6 @@ require_once '../includes/header.php';
                     <label class="form-label">Role *</label>
                     <select name="role" class="form-control" required>
                         <option value="student">Student</option>
-                        <option value="teacher">Teacher</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>

@@ -24,40 +24,23 @@
             <a href="<?php echo BASE_URL; ?>admin/manage_students.php" class="nav-link <?php echo (currentPage() == 'manage_students.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-users"></i> Manage Users
             </a>
+            <a href="<?php echo BASE_URL; ?>admin/manage_reviews.php" class="nav-link <?php echo (currentPage() == 'manage_reviews.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-message"></i> Manage Reviews
+            </a>
 
             <p class="nav-section-title">Transactions</p>
 
+            <a href="<?php echo BASE_URL; ?>admin/manage_requests.php" class="nav-link <?php echo (currentPage() == 'manage_requests.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-clipboard-check"></i> Book Requests
+            </a>
             <a href="<?php echo BASE_URL; ?>admin/issue_book.php" class="nav-link <?php echo (currentPage() == 'issue_book.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-hand-holding-hand"></i> Issue Book
             </a>
             <a href="<?php echo BASE_URL; ?>admin/return_book.php" class="nav-link <?php echo (currentPage() == 'return_book.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-rotate-left"></i> Return Book
             </a>
-
-        <?php elseif (isTeacher()): ?>
-            <!-- Teacher Links -->
-            <p class="nav-section-title">Main Menu</p>
-
-            <a href="<?php echo BASE_URL; ?>teacher/dashboard.php" class="nav-link <?php echo (currentPage() == 'dashboard.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-gauge-high"></i> Dashboard
-            </a>
-
-            <p class="nav-section-title">Library</p>
-
-            <a href="<?php echo BASE_URL; ?>teacher/browse_books.php" class="nav-link <?php echo (currentPage() == 'browse_books.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-magnifying-glass"></i> Browse Books
-            </a>
-            <a href="<?php echo BASE_URL; ?>teacher/issue_book.php" class="nav-link <?php echo (currentPage() == 'issue_book.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-hand-holding-hand"></i> Issue Book
-            </a>
-
-            <p class="nav-section-title">Account</p>
-
-            <a href="<?php echo BASE_URL; ?>teacher/my_books.php" class="nav-link <?php echo (currentPage() == 'my_books.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-book-open"></i> My Books
-            </a>
-            <a href="<?php echo BASE_URL; ?>teacher/profile.php" class="nav-link <?php echo (currentPage() == 'profile.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-user"></i> My Profile
+            <a href="<?php echo BASE_URL; ?>admin/borrow_history.php" class="nav-link <?php echo (currentPage() == 'borrow_history.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-history"></i> Borrow History
             </a>
 
         <?php else: ?>
@@ -79,15 +62,7 @@
 
             <p class="nav-section-title">Account</p>
 
-            <a href="<?php echo BASE_URL; ?>student/notifications.php" class="nav-link <?php echo (currentPage() == 'notifications.php') ? 'active' : ''; ?>">
-                <i class="fa-solid fa-bell"></i> Notifications
-                <?php
-                $notifCount = getUnreadNotificationCount();
-                if ($notifCount > 0):
-                ?>
-                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full"><?php echo $notifCount; ?></span>
-                <?php endif; ?>
-            </a>
+            <!-- Notification Link Removed -->
             <a href="<?php echo BASE_URL; ?>student/profile.php" class="nav-link <?php echo (currentPage() == 'profile.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-user"></i> My Profile
             </a>

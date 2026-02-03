@@ -1,42 +1,58 @@
-# Library Management System
+# 📚 Library Management System
 
-A production-ready Library Management System built with Core PHP, MySQL, and Vanilla JavaScript.
+A high-performance, production-ready Library Management System built with **Core PHP**, **MySQL**, and **Vanilla JavaScript**. This system features a dual-portal design for Administrators and Students, focusing on aesthetics, speed, and personalized user experience.
 
-## Features
+---
 
-- **Admin Panel**: Manage books, students, issue/return books, dashboard stats.
-- **Student Panel**: View profiles, borrow history, browse books (search/filter).
-- **Authentication**: Secure Login/Registration with password hashing.
-- **Modern UI**: Response design, Dark/Light mode, Animations.
+## ✨ Key Features
 
-## Setup Instructions
+### 🛡️ Administrative Power
 
-### 1. Database Setup
+- **Inventory Control**: Full CRUD for books and categories with visibility toggles.
+- **Circulation Management**: Seamless issue and return tracking with automated fine calculation.
+- **User Auditing**: Management of student/staff accounts and a detailed activity log.
 
-1. Open your MySQL tool (phpMyAdmin, Workbench, etc.).
-2. Create time database `library_system` (if not autocreated).
-3. Import the `database_setup.sql` file located in the root directory.
-   - This will create all tables and a default Admin account.
+### 👥 Student Experience
+
+- **Smart Recommendations**: Personalized book suggestions based on reading history and favorite categories.
+- **Interactive Browsing**: Advanced filtering (Search, Category, Availability) with live status labels.
+- **Review System**: Ability to rate, review, update, and manage feedback on books.
+- **Modern UI**: Light/Dark mode persistence and fluid CSS animations.
+
+---
+
+## 🚀 Quick Setup
+
+### 1. Database Initialization
+
+1. Create a database named `library_system` in your MySQL server.
+2. Import **`database.sql`** from the root directory to set up the tables and sample data.
 
 ### 2. Configuration
 
-1. Open `config/db.php` and `config/config.php`.
-2. Update `DB_PASS` if your MySQL root password is not empty.
-3. Update `BASE_URL` in `config/config.php` if your project folder is not named `library-management-system`. The host/domain is detected automatically.
+1. Setup your database credentials in `config/db.php`.
+2. check `config/config.php` to ensure the `BASE_URL` matches your local environment.
 
-### 3. Usage
+### 3. Default Credentials
 
-- **Admin Login**:
-  - Email: `admin@library.com`
-  - Password: `admin123`
-- **Student**:
-  - Register a new account from the Login page.
+- **Admin**: `admin@library.com` / `admin123`
+- **Student**: Register a new account directly from the entry portal.
 
-## Folder Structure
+---
 
-- `admin/`: Admin pages (Dashboard, Manage Books, etc.)
-- `student/`: Student pages (Dashboard, Profile, etc.)
-- `auth/`: Login, Register, Logout
-- `config/`: Database and App config
-- `includes/`: Reusable header, footer, sidebar, functions
-- `assets/`: CSS, JS, Images
+## 📖 Detailed Documentation
+
+For deep technical details, please refer to the following files:
+
+- 🏛️ **[Database Schema](docs_database.md)**: Detailed table structures and relationships.
+- 📁 **[Project Structure](docs_files.md)**: Understanding the role of every file and folder.
+- 🌟 **[Full Feature Set](docs_features.md)**: A complete list of all implemented functionalities.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Backend**: PHP 8.x (PDO for DB interactions)
+- **Frontend**: Vanilla JS (ES6+), Vanilla CSS (Custom UI Framework)
+- **Database**: MySQL / MariaDB
+- **Security**: CSRF Protection, Password Hashing, Input Sanitization

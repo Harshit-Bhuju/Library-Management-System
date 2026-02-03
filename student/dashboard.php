@@ -37,31 +37,52 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $my_books = $stmt->fetchAll();
 
-// Recommended Books (based on same category as previously borrowed)
-$recommended = $pdo->prepare("
+// 1. Identify favorite categories (from returned books or 4+ star reviews)
+$fav_categories_stmt = $pdo->prepare("
+    SELECT b.category_id, COUNT(*) as interaction_count
+    FROM issued_books i
+    JOIN books b ON i.book_id = b.book_id
+    WHERE i.user_id = ? AND i.status = 'returned'
+    GROUP BY b.category_id
+    UNION ALL
+    SELECT b.category_id, COUNT(*) as interaction_count
+    FROM reviews r
+    JOIN books b ON r.book_id = b.book_id
+    WHERE r.user_id = ? AND r.rating >= 4
+    GROUP BY b.category_id
+    ORDER BY interaction_count DESC
+    LIMIT 3
+");
+$fav_categories_stmt->execute([$user_id, $user_id]);
+$fav_categories = $fav_categories_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+// 2. Fetch Personalized Recommendations
+$rec_query = "
     SELECT DISTINCT b.*, c.category_name,
            (SELECT AVG(rating) FROM reviews WHERE book_id = b.book_id) as avg_rating
     FROM books b
     LEFT JOIN categories c ON b.category_id = c.category_id
-    WHERE b.available_copies > 0
-    AND b.book_id NOT IN (
+    WHERE b.book_id NOT IN (
         SELECT book_id FROM issued_books WHERE user_id = ?
     )
-    ORDER BY RAND()
-    LIMIT 4
-");
-$recommended->execute([$user_id]);
+    AND b.is_active = 1
+";
+
+if (!empty($fav_categories)) {
+    $placeholders = implode(',', array_fill(0, count($fav_categories), '?'));
+    $rec_query .= " ORDER BY (b.category_id IN ($placeholders)) DESC, RAND() LIMIT 4";
+    $params = array_merge([$user_id], $fav_categories);
+} else {
+    $rec_query .= " ORDER BY RAND() LIMIT 4";
+    $params = [$user_id];
+}
+
+$recommended = $pdo->prepare($rec_query);
+$recommended->execute($params);
 $recommendations = $recommended->fetchAll();
 
-// Recent Notifications
-$notifications = $pdo->prepare("
-    SELECT * FROM notifications 
-    WHERE user_id = ? 
-    ORDER BY created_at DESC 
-    LIMIT 3
-");
-$notifications->execute([$user_id]);
-$recent_notifications = $notifications->fetchAll();
+
+// Notification query removed
 
 $pageTitle = 'Student Dashboard';
 require_once '../includes/header.php';
@@ -102,7 +123,7 @@ require_once '../includes/header.php';
                     <p class="font-medium text-red-800 dark:text-red-200">You have <?php echo $overdue_count; ?> overdue book(s)!</p>
                     <p class="text-sm text-red-600 dark:text-red-300">Please return them as soon as possible to avoid additional fines.</p>
                 </div>
-                <span class="text-2xl font-bold text-red-600">$<?php echo number_format($total_fines, 2); ?></span>
+                <span class="text-2xl font-bold text-red-600">NPR <?php echo number_format($total_fines, 2); ?></span>
             </div>
         <?php endif; ?>
 
@@ -158,7 +179,7 @@ require_once '../includes/header.php';
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-gray-500 dark:text-gray-400 text-sm">Pending Fines</p>
-                        <h2 class="text-2xl md:text-3xl font-bold mt-1 <?php echo $total_fines > 0 ? 'text-red-600' : 'text-gray-400'; ?>">$<?php echo number_format($total_fines, 2); ?></h2>
+                        <h2 class="text-2xl md:text-3xl font-bold mt-1 <?php echo $total_fines > 0 ? 'text-red-600' : 'text-gray-400'; ?>">NPR <?php echo number_format($total_fines, 2); ?></h2>
                         <p class="text-xs text-gray-400 mt-1">To pay</p>
                     </div>
                     <div class="w-12 h-12 <?php echo $total_fines > 0 ? 'bg-red-100 dark:bg-red-900/30' : 'bg-gray-100 dark:bg-gray-700'; ?> rounded-xl flex items-center justify-center <?php echo $total_fines > 0 ? 'text-red-600' : 'text-gray-400'; ?>">
@@ -167,6 +188,48 @@ require_once '../includes/header.php';
                 </div>
             </div>
         </div>
+
+        <!-- Recently Returned Books -->
+        <?php
+        $returned_list_stmt = $pdo->prepare("
+            SELECT i.*, b.title, b.author, b.cover_image
+            FROM issued_books i
+            JOIN books b ON i.book_id = b.book_id
+            WHERE i.user_id = ? AND i.status = 'returned'
+            ORDER BY i.return_date DESC
+            LIMIT 3
+        ");
+        $returned_list_stmt->execute([$user_id]);
+        $recently_returned = $returned_list_stmt->fetchAll();
+        ?>
+
+        <?php if (count($recently_returned) > 0): ?>
+            <div class="mb-8" data-aos="fade-up">
+                <h3 class="text-lg font-semibold dark:text-white mb-4">Recently Returned</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <?php foreach ($recently_returned as $book): ?>
+                        <div class="stat-card opacity-75">
+                            <div class="flex gap-4">
+                                <div class="w-16 h-24 bg-gray-200 dark:bg-slate-600 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0 overflow-hidden">
+                                    <?php if ($book['cover_image']): ?>
+                                        <img src="<?php echo BASE_URL . $book['cover_image']; ?>" class="w-full h-full object-cover" alt="">
+                                    <?php else: ?>
+                                        <i class="fa-solid fa-book text-2xl"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-semibold text-sm line-clamp-2 dark:text-white"><?php echo e($book['title']); ?></h4>
+                                    <p class="text-xs text-gray-500 mt-0.5"><?php echo e($book['author']); ?></p>
+                                    <div class="mt-2 text-xs text-green-600">
+                                        <i class="fa-solid fa-check-circle mr-1"></i> Returned on <?php echo formatDate($book['return_date'], 'M j'); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <!-- Currently Issued Books -->
         <div class="mb-8" data-aos="fade-up">
@@ -228,6 +291,86 @@ require_once '../includes/header.php';
             </div>
         </div>
 
+        <!-- Pending Requests Section -->
+        <?php
+        $pending_stmt = $pdo->prepare("
+            SELECT i.*, b.title, b.author, b.cover_image
+            FROM issued_books i
+            JOIN books b ON i.book_id = b.book_id
+            WHERE i.user_id = ? AND i.status = 'requested'
+            ORDER BY i.issue_date DESC
+        ");
+        $pending_stmt->execute([$user_id]);
+        $pending_requests = $pending_stmt->fetchAll();
+        ?>
+
+        <?php if (count($pending_requests) > 0): ?>
+            <div class="mb-8" data-aos="fade-up">
+                <h3 class="text-lg font-semibold dark:text-white mb-4">Pending Book Requests</h3>
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 mb-4">
+                    <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                        <i class="fa-solid fa-info-circle mr-2"></i>
+                        Please wait for admin approval. You cannot borrow the book until the request is approved.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <?php foreach ($pending_requests as $req): ?>
+                        <div class="stat-card border-yellow-200 dark:border-yellow-800">
+                            <div class="flex gap-4">
+                                <div class="w-16 h-24 bg-gray-200 dark:bg-slate-600 rounded-lg flex items-center justify-center text-gray-400 flex-shrink-0 overflow-hidden">
+                                    <?php if ($req['cover_image']): ?>
+                                        <img src="<?php echo BASE_URL . $req['cover_image']; ?>" class="w-full h-full object-cover" alt="">
+                                    <?php else: ?>
+                                        <i class="fa-solid fa-book text-2xl"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-semibold text-sm line-clamp-2 dark:text-white"><?php echo e($req['title']); ?></h4>
+                                    <p class="text-xs text-gray-500 mt-0.5"><?php echo e($req['author']); ?></p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <span class="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                            Pending Approval
+                                        </span>
+                                        <button onclick="cancelMyRequest(<?php echo $req['issue_id']; ?>)" class="text-red-500 hover:text-red-700 text-xs font-medium flex items-center gap-1 transition-colors" title="Cancel Request">
+                                            <i class="fa-solid fa-times-circle"></i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <script>
+            function cancelMyRequest(issueId) {
+                if (!confirm('Are you sure you want to cancel this book request?')) return;
+
+                const formData = new FormData();
+                formData.append('issue_id', issueId);
+
+                fetch('cancel_request.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Toast.success(data.message);
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            Toast.error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Toast.error('An error occurred. Please try again.');
+                    });
+            }
+        </script>
+
         <!-- Recommendations & Notifications Row -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Recommendations -->
@@ -243,7 +386,7 @@ require_once '../includes/header.php';
                 <?php if (count($recommendations) > 0): ?>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <?php foreach ($recommendations as $book): ?>
-                            <div class="book-card overflow-hidden">
+                            <div class="book-card overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onclick='openBookDetail(<?php echo htmlspecialchars(json_encode($book), ENT_QUOTES, 'UTF-8'); ?>)'>
                                 <div class="book-cover-placeholder">
                                     <?php if ($book['cover_image']): ?>
                                         <img src="<?php echo BASE_URL . $book['cover_image']; ?>" class="w-full h-full object-cover" alt="">
@@ -269,47 +412,192 @@ require_once '../includes/header.php';
                 <?php endif; ?>
             </div>
 
-            <!-- Recent Notifications -->
-            <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold dark:text-white">
-                        <i class="fa-solid fa-bell text-primary-500 mr-2"></i>
-                        Notifications
-                    </h3>
-                    <a href="notifications.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All →</a>
-                </div>
-
-                <?php if (count($recent_notifications) > 0): ?>
-                    <div class="space-y-3">
-                        <?php foreach ($recent_notifications as $notif): ?>
-                            <div class="p-3 rounded-lg <?php echo $notif['is_read'] ? 'bg-gray-50 dark:bg-slate-700' : 'bg-primary-50 dark:bg-primary-900/20'; ?>">
-                                <div class="flex items-start gap-2">
-                                    <i class="fa-solid <?php
-                                                        echo match ($notif['notification_type']) {
-                                                            'success' => 'fa-check-circle text-green-500',
-                                                            'warning' => 'fa-exclamation-triangle text-yellow-500',
-                                                            'danger' => 'fa-exclamation-circle text-red-500',
-                                                            default => 'fa-info-circle text-blue-500'
-                                                        };
-                                                        ?> mt-0.5"></i>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium dark:text-white"><?php echo e($notif['title']); ?></p>
-                                        <p class="text-xs text-gray-500 line-clamp-2"><?php echo e($notif['message']); ?></p>
-                                        <p class="text-xs text-gray-400 mt-1"><?php echo formatDateTime($notif['created_at']); ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fa-solid fa-bell-slash text-3xl mb-2 opacity-50"></i>
-                        <p class="text-sm">No notifications yet</p>
-                    </div>
-                <?php endif; ?>
-            </div>
+            <!-- Recent Notifications Removed -->
         </div>
     </main>
 </div>
+
+<!-- Book Detail Modal -->
+<div class="modal-overlay" id="bookDetailModal">
+    <div class="modal-content max-w-2xl">
+        <button class="modal-close" onclick="closeModal('bookDetailModal')">
+            <i class="fa-solid fa-times"></i>
+        </button>
+
+        <div class="flex gap-6">
+            <div class="w-40 flex-shrink-0">
+                <div id="detail_cover" class="w-full h-56 bg-gray-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden">
+                    <i class="fa-solid fa-book text-3xl"></i>
+                </div>
+            </div>
+
+            <div class="flex-1">
+                <span id="detail_category" class="badge badge-primary mb-2"></span>
+                <h3 id="detail_title" class="text-xl font-bold dark:text-white"></h3>
+                <p id="detail_author" class="text-gray-500 mt-1"></p>
+
+                <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
+                    <div>
+                        <span class="text-gray-500">ISBN:</span>
+                        <span id="detail_isbn" class="font-medium dark:text-white ml-1"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Publisher:</span>
+                        <span id="detail_publisher" class="font-medium dark:text-white ml-1"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Total Copies:</span>
+                        <span id="detail_total" class="font-medium dark:text-white ml-1"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Available:</span>
+                        <span id="detail_available" class="font-medium ml-1"></span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">Status:</span>
+                        <span id="detail_status" class="font-medium ml-1"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4 class="text-sm font-semibold text-gray-500 mb-1">Description</h4>
+                    <p id="detail_description" class="text-sm text-gray-600 dark:text-gray-400"></p>
+                </div>
+
+                <div class="mt-4 flex gap-2">
+                    <div id="detail_rating" class="flex items-center gap-1"></div>
+                </div>
+
+                <!-- Request Action in Modal -->
+                <div class="mt-6 flex justify-end">
+                    <button id="modalRequestBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Confirmation Modal -->
+<div class="modal-overlay" id="requestModal">
+    <div class="modal-content max-w-sm text-center">
+        <div class="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-question text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2 dark:text-white">Request Book?</h3>
+        <p class="text-gray-500 mb-6">Are you sure you want to request this book? You will need to collect it from the library.</p>
+
+        <div class="flex gap-3 justify-center">
+            <input type="hidden" id="request_book_id">
+            <button onclick="confirmRequest()" class="btn btn-primary">Yes, Request</button>
+            <button onclick="closeModal('requestModal')" class="btn btn-outline">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openBookDetail(book) {
+        document.getElementById('detail_title').textContent = book.title;
+        document.getElementById('detail_author').textContent = 'by ' + book.author;
+        document.getElementById('detail_category').textContent = book.category_name || 'Uncategorized';
+        document.getElementById('detail_isbn').textContent = book.isbn || 'N/A';
+        document.getElementById('detail_publisher').textContent = book.publisher || 'N/A';
+        document.getElementById('detail_total').textContent = book.total_copies;
+        document.getElementById('detail_description').textContent = book.description || 'No description available.';
+
+        const available = document.getElementById('detail_available');
+        available.textContent = book.available_copies;
+        available.className = book.available_copies > 0 ? 'font-medium ml-1 text-green-600' : 'font-medium ml-1 text-red-600';
+
+        const cover = document.getElementById('detail_cover');
+        if (book.cover_image) {
+            cover.innerHTML = `<img src="<?php echo BASE_URL; ?>${book.cover_image}" class="w-full h-full object-cover" alt="">`;
+        } else {
+            cover.innerHTML = '<i class="fa-solid fa-book text-3xl"></i>';
+        }
+
+        const rating = document.getElementById('detail_rating');
+        if (book.avg_rating) {
+            rating.innerHTML = `
+                <i class="fa-solid fa-star text-yellow-400"></i>
+                <span class="font-medium">${parseFloat(book.avg_rating).toFixed(1)}</span>
+                <span class="text-gray-400 text-sm">(${book.review_count} reviews)</span>
+            `;
+        } else {
+            rating.innerHTML = '<span class="text-gray-400 text-sm">No ratings yet</span>';
+        }
+
+        // Setup Request Button in Modal
+        const reqBtn = document.getElementById('modalRequestBtn');
+        const statusEl = document.getElementById('detail_status');
+
+        if (!book.is_active) {
+            statusEl.textContent = 'Inactive';
+            statusEl.className = 'font-medium ml-1 text-red-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-ban mr-2"></i> Inactive';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else if (book.available_copies <= 0) {
+            statusEl.textContent = 'Out of Stock';
+            statusEl.className = 'font-medium ml-1 text-yellow-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-clock mr-2"></i> Out of Stock';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else {
+            statusEl.textContent = 'Active';
+            statusEl.className = 'font-medium ml-1 text-green-600';
+            reqBtn.disabled = false;
+            reqBtn.innerHTML = '<i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book';
+            reqBtn.className = 'btn btn-primary';
+            reqBtn.onclick = function() {
+                closeModal('bookDetailModal');
+                requestBook(book.book_id);
+            };
+        }
+
+        openModal('bookDetailModal');
+    }
+
+    function requestBook(bookId) {
+        document.getElementById('request_book_id').value = bookId;
+        openModal('requestModal');
+    }
+
+    function confirmRequest() {
+        const bookId = document.getElementById('request_book_id').value;
+        const btn = document.querySelector(`#requestModal .btn-primary`); // Select the confirm button
+
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        const formData = new FormData();
+        formData.append('book_id', bookId);
+
+        fetch('request_book.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeModal('requestModal');
+                if (data.success) {
+                    Toast.success(data.message);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    Toast.error(data.message);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Toast.error('An error occurred. Please try again.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+    }
+</script>
 
 <?php require_once '../includes/footer.php'; ?>

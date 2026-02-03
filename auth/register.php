@@ -83,12 +83,9 @@ require_once '../includes/header.php';
                                 class="block w-full px-4 py-3 border border-gray-200 dark:border-slate-600 rounded-xl bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-600 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all sm:text-sm appearance-none"
                                 required>
                                 <option value="">Select Department</option>
-                                <option value="Physical Science">Physical Science</option>
-                                <option value="Biology Science">Biology Science</option>
-                                <option value="Business">Business</option>
+                                <option value="Science">Science</option>
                                 <option value="Management">Management</option>
-                                <option value="Hotel Management">Hotel Management</option>
-                                <option value="Computer Science">Computer Science</option>
+                                <option value="Humanities">Humanities</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                                 <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -191,7 +188,7 @@ require_once '../includes/header.php';
 
         if (password !== confirmPassword) {
             e.preventDefault();
-            alert('Passwords do not match!');
+            Toast.error('Passwords do not match!');
         }
     });
 </script>

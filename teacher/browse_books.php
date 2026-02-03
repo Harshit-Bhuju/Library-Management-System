@@ -18,7 +18,7 @@ $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
 // Build query
-$where = "b.is_active = 1";
+$where = "1=1"; // Show all books, including inactive
 $params = [];
 
 if ($search) {
@@ -125,15 +125,19 @@ require_once '../includes/header.php';
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Availability Badge -->
-                            <div class="absolute top-2 right-2">
-                                <?php if ($book['available_copies'] > 0): ?>
+                            <!-- Status Badges -->
+                            <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+                                <?php if (!$book['is_active']): ?>
+                                    <span class="badge badge-danger">
+                                        <i class="fa-solid fa-ban mr-1"></i>Inactive
+                                    </span>
+                                <?php elseif ($book['available_copies'] > 0): ?>
                                     <span class="badge badge-success">
                                         <i class="fa-solid fa-check mr-1"></i><?php echo $book['available_copies']; ?> left
                                     </span>
                                 <?php else: ?>
-                                    <span class="badge badge-danger">
-                                        <i class="fa-solid fa-times mr-1"></i>Unavailable
+                                    <span class="badge badge-warning">
+                                        <i class="fa-solid fa-clock mr-1"></i>Out of Stock
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -166,12 +170,19 @@ require_once '../includes/header.php';
                                     class="btn btn-sm btn-outline flex-1 justify-center">
                                     <i class="fa-solid fa-eye"></i> View
                                 </button>
-                                <?php if (!isAdmin() && $book['available_copies'] > 0): ?>
-                                    <button onclick="requestBook(<?php echo $book['book_id']; ?>)"
-                                        class="btn btn-sm btn-primary flex-1 justify-center"
-                                        <?php echo !canBorrowMore($user_id) ? 'disabled title="Borrow limit reached"' : ''; ?>>
-                                        <i class="fa-solid fa-hand"></i> Request
-                                    </button>
+                                <?php if (!isAdmin()): ?>
+                                    <?php if ($book['is_active'] && $book['available_copies'] > 0): ?>
+                                        <button onclick="requestBook(<?php echo $book['book_id']; ?>)"
+                                            class="btn btn-sm btn-primary flex-1 justify-center"
+                                            <?php echo !canBorrowMore($user_id) ? 'disabled title="Borrow limit reached"' : ''; ?>>
+                                            <i class="fa-solid fa-hand"></i> Request
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-outline flex-1 justify-center opacity-50 cursor-not-allowed" disabled>
+                                            <i class="fa-solid <?php echo !$book['is_active'] ? 'fa-ban' : 'fa-hourglass-half'; ?>"></i>
+                                            <?php echo !$book['is_active'] ? 'Inactive' : 'No Stock'; ?>
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -250,6 +261,10 @@ require_once '../includes/header.php';
                         <span class="text-gray-500">Available:</span>
                         <span id="detail_available" class="font-medium ml-1"></span>
                     </div>
+                    <div>
+                        <span class="text-gray-500">Status:</span>
+                        <span id="detail_status" class="font-medium ml-1"></span>
+                    </div>
                 </div>
 
                 <div class="mt-4">
@@ -259,6 +274,13 @@ require_once '../includes/header.php';
 
                 <div class="mt-4 flex gap-2">
                     <div id="detail_rating" class="flex items-center gap-1"></div>
+                </div>
+
+                <!-- Request Action in Modal -->
+                <div class="mt-6 flex justify-end">
+                    <button id="modalRequestBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book
+                    </button>
                 </div>
             </div>
         </div>
@@ -297,11 +319,39 @@ require_once '../includes/header.php';
             rating.innerHTML = '<span class="text-gray-400 text-sm">No ratings yet</span>';
         }
 
+        // Setup Request Button in Modal
+        const reqBtn = document.getElementById('modalRequestBtn');
+        const statusEl = document.getElementById('detail_status');
+
+        if (!book.is_active) {
+            statusEl.textContent = 'Inactive';
+            statusEl.className = 'font-medium ml-1 text-red-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-ban mr-2"></i> Inactive';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else if (book.available_copies <= 0) {
+            statusEl.textContent = 'Out of Stock';
+            statusEl.className = 'font-medium ml-1 text-yellow-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-clock mr-2"></i> Out of Stock';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else {
+            statusEl.textContent = 'Active';
+            statusEl.className = 'font-medium ml-1 text-green-600';
+            reqBtn.disabled = false;
+            reqBtn.innerHTML = '<i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book';
+            reqBtn.className = 'btn btn-primary';
+            reqBtn.onclick = function() {
+                closeModal('bookDetailModal');
+                requestBook(book.book_id);
+            };
+        }
+
         openModal('bookDetailModal');
     }
 
     function requestBook(bookId) {
-        alert('Book request feature coming soon! Please visit the library desk to borrow this book.');
+        Toast.info('Book request feature coming soon! Please visit the library desk to borrow this book.');
     }
 </script>
 

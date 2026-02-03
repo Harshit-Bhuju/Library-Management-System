@@ -101,7 +101,7 @@ require_once '../includes/header.php';
 <div class="dashboard-layout">
     <?php require_once '../includes/sidebar.php'; ?>
 
-    <main class="main-content lg:mt-0 mt-16">
+    <main class="main-content lg:mt-0 mt-16 overflow-x-hidden">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Analytics</h1>
@@ -142,11 +142,11 @@ require_once '../includes/header.php';
                 <p class="text-sm text-gray-500">Overdue</p>
             </div>
             <div class="stat-card text-center" data-aos="fade-up" data-aos-delay="150">
-                <p class="text-2xl font-bold text-green-600">$<?php echo number_format($fine_stats['collected'], 2); ?></p>
+                <p class="text-2xl font-bold text-green-600">NPR <?php echo number_format($fine_stats['collected'], 2); ?></p>
                 <p class="text-sm text-gray-500">Fines Collected</p>
             </div>
             <div class="stat-card text-center" data-aos="fade-up" data-aos-delay="200">
-                <p class="text-2xl font-bold text-yellow-600">$<?php echo number_format($fine_stats['pending'], 2); ?></p>
+                <p class="text-2xl font-bold text-yellow-600">NPR <?php echo number_format($fine_stats['pending'], 2); ?></p>
                 <p class="text-sm text-gray-500">Fines Pending</p>
             </div>
         </div>
@@ -156,13 +156,17 @@ require_once '../includes/header.php';
             <!-- Daily Activity -->
             <div class="stat-card" data-aos="fade-up">
                 <h3 class="text-lg font-semibold mb-4 dark:text-white">Daily Activity</h3>
-                <canvas id="dailyChart" height="250"></canvas>
+                <div class="relative h-64 w-full">
+                    <canvas id="dailyChart"></canvas>
+                </div>
             </div>
 
             <!-- By Category -->
             <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
                 <h3 class="text-lg font-semibold mb-4 dark:text-white">Issues by Category</h3>
-                <canvas id="categoryChart" height="250"></canvas>
+                <div class="relative h-64 w-full">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -192,7 +196,10 @@ require_once '../includes/header.php';
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <p class="text-center text-gray-500 py-8">No data for this period</p>
+                    <div class="text-center py-8">
+                        <span class="text-3xl font-bold text-gray-300 dark:text-gray-600">0</span>
+                        <p class="text-gray-500 mt-1">Borrowers</p>
+                    </div>
                 <?php endif; ?>
             </div>
 
@@ -220,7 +227,10 @@ require_once '../includes/header.php';
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <p class="text-center text-gray-500 py-8">No data for this period</p>
+                    <div class="text-center py-8">
+                        <span class="text-3xl font-bold text-gray-300 dark:text-gray-600">0</span>
+                        <p class="text-gray-500 mt-1">Popular Books</p>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

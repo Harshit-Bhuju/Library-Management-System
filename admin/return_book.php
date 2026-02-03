@@ -57,21 +57,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['return_book'])) {
         // Increase available copies
         $pdo->prepare("UPDATE books SET available_copies = available_copies + 1 WHERE book_id = ?")->execute([$issue['book_id']]);
 
+        // Auto-Reactivate when stock returns
+        $pdo->prepare("UPDATE books SET is_active = 1 WHERE book_id = ?")->execute([$issue['book_id']]);
+
         $pdo->commit();
 
         // Log activity
-        logActivity('book_return', "Returned '{$issue['title']}' from {$issue['name']}" . ($fine_amount > 0 ? " (Fine: \${$fine_amount})" : ''));
+        logActivity('book_return', "Returned '{$issue['title']}' from {$issue['name']}" . ($fine_amount > 0 ? " (Fine: " . CURRENCY_SYMBOL . " {$fine_amount})" : ''));
 
-        // Send notification
-        $msg = "You have returned '{$issue['title']}'.";
-        if ($fine_amount > 0) {
-            $msg .= " Fine: \${$fine_amount}" . ($fine_paid ? ' (Paid)' : ' (Pending)');
-        }
-        sendNotification($issue['user_id'], 'Book Returned', $msg, 'success');
+        // Notification removed
 
         $success_msg = "Book '{$issue['title']}' returned successfully!";
         if ($fine_amount > 0) {
-            $success_msg .= " Fine: \${$fine_amount}" . ($fine_paid ? ' (Collected)' : ' (Pending)');
+            $success_msg .= " Fine: " . CURRENCY_SYMBOL . " {$fine_amount}" . ($fine_paid ? ' (Collected)' : ' (Pending)');
         }
 
         setFlash('success', $success_msg);
@@ -142,11 +140,11 @@ require_once '../includes/header.php';
                 <?php
                 $pending_fines = array_sum(array_map(fn($i) => $i['days_overdue'] > 0 ? $i['days_overdue'] * $fine_per_day : 0, $issued));
                 ?>
-                <p class="text-2xl font-bold text-yellow-600">$<?php echo number_format($pending_fines, 2); ?></p>
+                <p class="text-2xl font-bold text-yellow-600"><?php echo CURRENCY_SYMBOL . ' ' . number_format($pending_fines, 2); ?></p>
                 <p class="text-sm text-gray-500">Pending Fines</p>
             </div>
             <div class="stat-card text-center" data-aos="fade-up" data-aos-delay="200">
-                <p class="text-2xl font-bold text-gray-600">$<?php echo number_format($fine_per_day, 2); ?></p>
+                <p class="text-2xl font-bold text-gray-600"><?php echo CURRENCY_SYMBOL . ' ' . number_format($fine_per_day, 2); ?></p>
                 <p class="text-sm text-gray-500">Fine/Day</p>
             </div>
         </div>
@@ -181,11 +179,11 @@ require_once '../includes/header.php';
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="flex items-center gap-2">
-                                            <?php echo getAvatar($issue['borrower_name'], 28); ?>
-                                            <div>
-                                                <p class="text-sm dark:text-white"><?php echo e($issue['borrower_name']); ?></p>
-                                                <p class="text-xs text-gray-400"><?php echo getRoleBadge($issue['role']); ?></p>
+                                        <div class="flex items-center gap-3">
+                                            <?php echo getAvatar($issue['borrower_name'], 32); ?>
+                                            <div class="flex flex-col">
+                                                <p class="font-medium text-sm dark:text-white leading-tight"><?php echo e($issue['borrower_name']); ?></p>
+                                                <div class="mt-1"><?php echo getRoleBadge($issue['role']); ?></div>
                                             </div>
                                         </div>
                                     </td>
@@ -201,7 +199,7 @@ require_once '../includes/header.php';
                                     <td><?php echo getStatusBadge($issue['status']); ?></td>
                                     <td>
                                         <?php if ($fine > 0): ?>
-                                            <span class="text-red-600 font-semibold">$<?php echo number_format($fine, 2); ?></span>
+                                            <span class="text-red-600 font-semibold"><?php echo CURRENCY_SYMBOL . ' ' . number_format($fine, 2); ?></span>
                                         <?php else: ?>
                                             <span class="text-green-600">-</span>
                                         <?php endif; ?>
@@ -253,7 +251,7 @@ require_once '../includes/header.php';
             <div id="fineSection" class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 mb-4 hidden">
                 <div class="flex justify-between items-center">
                     <span class="text-red-700 dark:text-red-300 font-medium">Fine Amount</span>
-                    <span class="text-2xl font-bold text-red-600" id="return_fine">$0.00</span>
+                    <span class="text-2xl font-bold text-red-600" id="return_fine"><?php echo CURRENCY_SYMBOL; ?> 0.00</span>
                 </div>
                 <label class="flex items-center gap-2 mt-3 cursor-pointer">
                     <input type="checkbox" name="fine_paid" class="w-4 h-4 accent-green-600">
@@ -276,7 +274,7 @@ require_once '../includes/header.php';
         document.getElementById('return_issue_id').value = issueId;
         document.getElementById('return_book_title').textContent = bookTitle;
         document.getElementById('return_borrower').textContent = borrower;
-        document.getElementById('return_fine').textContent = '$' + fine.toFixed(2);
+        document.getElementById('return_fine').textContent = '<?php echo CURRENCY_SYMBOL; ?> ' + fine.toFixed(2);
 
         const fineSection = document.getElementById('fineSection');
         if (fine > 0) {

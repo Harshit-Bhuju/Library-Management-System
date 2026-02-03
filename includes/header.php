@@ -23,7 +23,7 @@ if (!isLoggedIn() && isset($_COOKIE['remember_me'])) {
 }
 
 // Get notification count for logged in users
-$notificationCount = isLoggedIn() ? getUnreadNotificationCount() : 0;
+// Notification count removed
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?php echo $_COOKIE['theme'] ?? 'light'; ?>">
@@ -80,8 +80,15 @@ $notificationCount = isLoggedIn() ? getUnreadNotificationCount() : 0;
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- jQuery & Select2 (Searchable Dropdowns) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/main.css">
+
+
 
     <style>
         body {
@@ -112,12 +119,7 @@ $notificationCount = isLoggedIn() ? getUnreadNotificationCount() : 0;
                 </button>
 
                 <!-- Notifications -->
-                <a href="<?php echo BASE_URL; ?>student/notifications.php" class="notification-bell p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 relative">
-                    <i class="fa-solid fa-bell"></i>
-                    <?php if ($notificationCount > 0): ?>
-                        <span class="notification-badge"><?php echo $notificationCount > 9 ? '9+' : $notificationCount; ?></span>
-                    <?php endif; ?>
-                </a>
+                <!-- Notifications Removed -->
             </div>
         </div>
     <?php endif; ?>

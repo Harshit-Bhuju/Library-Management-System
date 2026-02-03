@@ -6,26 +6,26 @@ requireAdmin();
 // Fetch Stats
 $total_books = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 $total_students = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'student'")->fetchColumn();
-$total_teachers = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'teacher'")->fetchColumn();
 $issued_books = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status IN ('issued', 'overdue')")->fetchColumn();
 $overdue_books = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status = 'overdue'")->fetchColumn();
 $total_returned = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status = 'returned'")->fetchColumn();
 $total_fines = $pdo->query("SELECT COALESCE(SUM(fine_amount), 0) FROM issued_books WHERE fine_paid = 0")->fetchColumn();
 
-// Update overdue status for books past due date
+// Update overdue status
 $pdo->query("UPDATE issued_books SET status = 'overdue' WHERE status = 'issued' AND due_date < CURDATE()");
 
-// Recent Activities (Latest 10 Issues)
+// Recent Activities
 $stmt = $pdo->query("
     SELECT i.*, b.title, u.name as student_name, u.role as user_role
     FROM issued_books i 
     JOIN books b ON i.book_id = b.book_id 
     JOIN users u ON i.user_id = u.user_id 
+    WHERE i.status != 'requested'
     ORDER BY i.issue_id DESC LIMIT 10
 ");
 $recent_issues = $stmt->fetchAll();
 
-// Popular Books (Most Borrowed)
+// Popular Books
 $popular_books = $pdo->query("
     SELECT b.title, b.author, COUNT(i.issue_id) as borrow_count
     FROM books b
@@ -35,7 +35,7 @@ $popular_books = $pdo->query("
     LIMIT 5
 ")->fetchAll();
 
-// Monthly Stats for Chart
+// Monthly Stats
 $monthly_stats = $pdo->query("
     SELECT 
         DATE_FORMAT(issue_date, '%b') as month,
@@ -44,6 +44,16 @@ $monthly_stats = $pdo->query("
     WHERE issue_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
     GROUP BY YEAR(issue_date), MONTH(issue_date)
     ORDER BY issue_date ASC
+")->fetchAll();
+
+// Category Stats
+$category_stats = $pdo->query("
+    SELECT c.category_name, COUNT(i.issue_id) as count
+    FROM issued_books i
+    JOIN books b ON i.book_id = b.book_id
+    JOIN categories c ON b.category_id = c.category_id
+    GROUP BY c.category_id
+    LIMIT 5
 ")->fetchAll();
 
 $pageTitle = 'Admin Dashboard';
@@ -76,127 +86,106 @@ require_once '../includes/header.php';
         <?php echo getFlash(); ?>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-            <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card p-5" data-aos="fade-up">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">Total Books</p>
-                        <h2 class="text-2xl md:text-3xl font-bold mt-1" data-counter="<?php echo $total_books; ?>"><?php echo $total_books; ?></h2>
-                        <p class="text-xs text-gray-400 mt-1">In library</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Books</p>
+                        <h2 class="text-3xl font-bold mt-2 dark:text-white"><?php echo $total_books; ?></h2>
+                        <a href="manage_books.php" class="text-xs text-primary-600 hover:underline mt-1 inline-block">View All</a>
                     </div>
-                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center text-primary-600 dark:text-primary-400">
+                    <div class="bg-primary-50 dark:bg-primary-900/20 p-3 rounded-lg text-primary-600">
                         <i class="fa-solid fa-book text-xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card" data-aos="fade-up" data-aos-delay="150">
+            <div class="stat-card p-5" data-aos="fade-up" data-aos-delay="50">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">Issued Books</p>
-                        <h2 class="text-2xl md:text-3xl font-bold mt-1 text-yellow-600" data-counter="<?php echo $issued_books; ?>"><?php echo $issued_books; ?></h2>
-                        <?php if ($overdue_books > 0): ?>
-                            <p class="text-xs text-red-500 mt-1"><i class="fa-solid fa-exclamation-triangle"></i> <?php echo $overdue_books; ?> overdue</p>
-                        <?php else: ?>
-                            <p class="text-xs text-gray-400 mt-1">Currently out</p>
-                        <?php endif; ?>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Issued Books</p>
+                        <h2 class="text-3xl font-bold mt-2 text-yellow-600"><?php echo $issued_books; ?></h2>
+                        <p class="text-xs text-red-500 mt-1"><?php echo $overdue_books; ?> Overdue</p>
                     </div>
-                    <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center text-yellow-600 dark:text-yellow-400">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg text-yellow-600">
                         <i class="fa-solid fa-hand-holding-hand text-xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-card p-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">Students</p>
-                        <h2 class="text-2xl md:text-3xl font-bold mt-1 text-green-600" data-counter="<?php echo $total_students; ?>"><?php echo $total_students; ?></h2>
-                        <p class="text-xs text-gray-400 mt-1"><?php echo $total_teachers; ?> teachers</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Returned</p>
+                        <h2 class="text-3xl font-bold mt-2 text-green-600"><?php echo $total_returned; ?></h2>
+                        <a href="return_book.php" class="text-xs text-green-600 hover:underline mt-1 inline-block">Process Return</a>
                     </div>
-                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400">
+                    <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg text-green-600">
+                        <i class="fa-solid fa-check-circle text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card p-5" data-aos="fade-up" data-aos-delay="150">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Students</p>
+                        <h2 class="text-3xl font-bold mt-2 dark:text-white"><?php echo $total_students; ?></h2>
+                        <p class="text-xs text-gray-400 mt-1">Active Users</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg text-gray-600 dark:text-gray-400">
                         <i class="fa-solid fa-users text-xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card" data-aos="fade-up" data-aos-delay="250">
+            <?php
+            // New Requests Count
+            $pending_requests = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status = 'requested'")->fetchColumn();
+            ?>
+            <a href="manage_requests.php" class="stat-card p-5 hover:border-blue-500 transition-colors pointer-events-auto" data-aos="fade-up" data-aos-delay="200">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm">Pending Fines</p>
-                        <h2 class="text-2xl md:text-3xl font-bold mt-1 text-red-600">$<?php echo number_format($total_fines, 2); ?></h2>
-                        <p class="text-xs text-gray-400 mt-1">To collect</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Requests</p>
+                        <h2 class="text-3xl font-bold mt-2 text-blue-600"><?php echo $pending_requests; ?></h2>
+                        <p class="text-xs text-blue-500 mt-1">Pending Approval</p>
                     </div>
-                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-600 dark:text-red-400">
-                        <i class="fa-solid fa-dollar-sign text-xl"></i>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-blue-600">
+                        <i class="fa-solid fa-clipboard-question text-xl"></i>
+                    </div>
+                </div>
+            </a>
+
+            <div class="stat-card p-5" data-aos="fade-up" data-aos-delay="250">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Unpaid Fines</p>
+                        <h2 class="text-xl font-bold mt-2 text-red-600">NPR <?php echo number_format($total_fines, 2); ?></h2>
+                        <p class="text-xs text-gray-400 mt-1">Total Outstanding</p>
+                    </div>
+                    <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg text-red-600">
+                        <i class="fa-solid fa-coins text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="mb-8" data-aos="fade-up">
-            <h3 class="text-lg font-semibold mb-4 dark:text-white">Quick Actions</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <a href="issue_book.php" class="stat-card hover:border-primary-500 transition-colors text-center py-6">
-                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center text-primary-600 mx-auto mb-3">
-                        <i class="fa-solid fa-hand-holding-hand text-xl"></i>
-                    </div>
-                    <p class="font-medium dark:text-white">Issue Book</p>
-                </a>
-
-                <a href="return_book.php" class="stat-card hover:border-green-500 transition-colors text-center py-6">
-                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 mx-auto mb-3">
-                        <i class="fa-solid fa-rotate-left text-xl"></i>
-                    </div>
-                    <p class="font-medium dark:text-white">Return Book</p>
-                </a>
-
-                <a href="manage_books.php" class="stat-card hover:border-blue-500 transition-colors text-center py-6">
-                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 mx-auto mb-3">
-                        <i class="fa-solid fa-plus text-xl"></i>
-                    </div>
-                    <p class="font-medium dark:text-white">Add Book</p>
-                </a>
-
-                <a href="manage_students.php" class="stat-card hover:border-purple-500 transition-colors text-center py-6">
-                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600 mx-auto mb-3">
-                        <i class="fa-solid fa-user-plus text-xl"></i>
-                    </div>
-                    <p class="font-medium dark:text-white">Add User</p>
-                </a>
-            </div>
-        </div>
-
         <!-- Charts Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <!-- Monthly Activity Chart -->
-            <div class="stat-card" data-aos="fade-up">
+            <div class="stat-card lg:col-span-2" data-aos="fade-up">
                 <h3 class="text-lg font-semibold mb-4 dark:text-white">Monthly Activity</h3>
-                <canvas id="monthlyChart" height="200"></canvas>
+                <div class="h-64">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
             </div>
 
-            <!-- Popular Books -->
+            <!-- Issues by Category -->
             <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
-                <h3 class="text-lg font-semibold mb-4 dark:text-white">Popular Books</h3>
-                <?php if (count($popular_books) > 0): ?>
-                    <div class="space-y-3">
-                        <?php foreach ($popular_books as $index => $book): ?>
-                            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition">
-                                <div class="w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center text-primary-600 font-bold text-sm">
-                                    <?php echo $index + 1; ?>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-medium text-sm truncate dark:text-white"><?php echo e($book['title']); ?></p>
-                                    <p class="text-xs text-gray-500"><?php echo e($book['author']); ?></p>
-                                </div>
-                                <span class="badge badge-primary"><?php echo $book['borrow_count']; ?> borrows</span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <p class="text-gray-500 text-center py-4">No data available yet</p>
-                <?php endif; ?>
+                <h3 class="text-lg font-semibold mb-4 dark:text-white">Issues by Category</h3>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -204,7 +193,7 @@ require_once '../includes/header.php';
         <div class="stat-card" data-aos="fade-up">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold dark:text-white">Recent Activity</h3>
-                <a href="analytics.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All →</a>
+                <a href="issue_book.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All →</a>
             </div>
 
             <div class="overflow-x-auto">
@@ -299,6 +288,37 @@ require_once '../includes/header.php';
                 x: {
                     grid: {
                         display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Category Chart
+    const ctxCat = document.getElementById('categoryChart').getContext('2d');
+    const catData = <?php echo json_encode($category_stats); ?>;
+
+    new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+            labels: catData.map(item => item.category_name),
+            datasets: [{
+                data: catData.map(item => item.count),
+                backgroundColor: [
+                    '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 8
                     }
                 }
             }

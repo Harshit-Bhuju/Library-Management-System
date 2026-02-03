@@ -18,7 +18,7 @@ $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
 // Build query
-$where = "b.is_active = 1";
+$where = "1=1"; // Show all books, including inactive
 $params = [];
 
 if ($search) {
@@ -30,10 +30,11 @@ if ($category_filter) {
     $params[] = $category_filter;
 }
 if ($availability === 'available') {
-    $where .= " AND b.available_copies > 0";
+    $where .= " AND b.available_copies > 0 AND b.is_active = 1";
 } elseif ($availability === 'unavailable') {
-    $where .= " AND b.available_copies = 0";
+    $where .= " AND (b.available_copies = 0 OR b.is_active = 0)";
 }
+
 
 // Get total count
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM books b WHERE $where");
@@ -84,7 +85,7 @@ require_once '../includes/header.php';
                     </div>
                 </div>
                 <div class="w-40">
-                    <select name="category" class="form-control">
+                    <select name="category" class="form-control" onchange="this.form.submit()">
                         <option value="">All Categories</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?php echo $cat['category_id']; ?>" <?php echo $category_filter == $cat['category_id'] ? 'selected' : ''; ?>>
@@ -94,7 +95,7 @@ require_once '../includes/header.php';
                     </select>
                 </div>
                 <div class="w-40">
-                    <select name="availability" class="form-control">
+                    <select name="availability" class="form-control" onchange="this.form.submit()">
                         <option value="">Any Status</option>
                         <option value="available" <?php echo $availability === 'available' ? 'selected' : ''; ?>>Available</option>
                         <option value="unavailable" <?php echo $availability === 'unavailable' ? 'selected' : ''; ?>>Not Available</option>
@@ -116,7 +117,7 @@ require_once '../includes/header.php';
                     <div class="book-card" data-aos="fade-up">
                         <!-- Cover -->
                         <div class="relative">
-                            <div class="book-cover-placeholder group">
+                            <div class="book-cover-placeholder group cursor-pointer" onclick='openBookDetail(<?php echo htmlspecialchars(json_encode($book), ENT_QUOTES, 'UTF-8'); ?>)'>
                                 <?php if ($book['cover_image']): ?>
                                     <img src="<?php echo BASE_URL . $book['cover_image']; ?>"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="">
@@ -125,22 +126,26 @@ require_once '../includes/header.php';
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Availability Badge -->
-                            <div class="absolute top-2 right-2">
-                                <?php if ($book['available_copies'] > 0): ?>
+                            <!-- Status Badges -->
+                            <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+                                <?php if (!$book['is_active']): ?>
+                                    <span class="badge badge-danger">
+                                        <i class="fa-solid fa-ban mr-1"></i>Inactive
+                                    </span>
+                                <?php elseif ($book['available_copies'] > 0): ?>
                                     <span class="badge badge-success">
                                         <i class="fa-solid fa-check mr-1"></i><?php echo $book['available_copies']; ?> left
                                     </span>
                                 <?php else: ?>
-                                    <span class="badge badge-danger">
-                                        <i class="fa-solid fa-times mr-1"></i>Unavailable
+                                    <span class="badge badge-warning">
+                                        <i class="fa-solid fa-clock mr-1"></i>Out of Stock
                                     </span>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Info -->
-                        <div class="p-4">
+                        <div class="p-4" data-aos="fade-up" data-aos-delay="50">
                             <span class="text-xs text-primary-600 font-medium"><?php echo e($book['category_name'] ?? 'Uncategorized'); ?></span>
                             <h3 class="font-semibold text-sm md:text-base mt-1 line-clamp-2 dark:text-white" title="<?php echo e($book['title']); ?>">
                                 <?php echo e($book['title']); ?>
@@ -162,16 +167,23 @@ require_once '../includes/header.php';
 
                             <!-- Actions -->
                             <div class="mt-3 flex gap-2">
-                                <button onclick='openBookDetail(<?php echo json_encode($book); ?>)'
+                                <button onclick='openBookDetail(<?php echo htmlspecialchars(json_encode($book), ENT_QUOTES, 'UTF-8'); ?>)'
                                     class="btn btn-sm btn-outline flex-1 justify-center">
                                     <i class="fa-solid fa-eye"></i> View
                                 </button>
-                                <?php if (!isAdmin() && $book['available_copies'] > 0): ?>
-                                    <button onclick="requestBook(<?php echo $book['book_id']; ?>)"
-                                        class="btn btn-sm btn-primary flex-1 justify-center"
-                                        <?php echo !canBorrowMore($user_id) ? 'disabled title="Borrow limit reached"' : ''; ?>>
-                                        <i class="fa-solid fa-hand"></i> Request
-                                    </button>
+                                <?php if (!isAdmin()): ?>
+                                    <?php if ($book['is_active'] && $book['available_copies'] > 0): ?>
+                                        <button onclick="requestBook(<?php echo $book['book_id']; ?>)"
+                                            class="btn btn-sm btn-primary flex-1 justify-center"
+                                            <?php echo !canBorrowMore($user_id) ? 'disabled title="Borrow limit reached"' : ''; ?>>
+                                            <i class="fa-solid fa-hand"></i> Request
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-outline flex-1 justify-center opacity-50 cursor-not-allowed" disabled>
+                                            <i class="fa-solid <?php echo !$book['is_active'] ? 'fa-ban' : 'fa-hourglass-half'; ?>"></i>
+                                            <?php echo !$book['is_active'] ? 'Inactive' : 'No Stock'; ?>
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -250,6 +262,10 @@ require_once '../includes/header.php';
                         <span class="text-gray-500">Available:</span>
                         <span id="detail_available" class="font-medium ml-1"></span>
                     </div>
+                    <div>
+                        <span class="text-gray-500">Status:</span>
+                        <span id="detail_status" class="font-medium ml-1"></span>
+                    </div>
                 </div>
 
                 <div class="mt-4">
@@ -257,10 +273,71 @@ require_once '../includes/header.php';
                     <p id="detail_description" class="text-sm text-gray-600 dark:text-gray-400"></p>
                 </div>
 
-                <div class="mt-4 flex gap-2">
-                    <div id="detail_rating" class="flex items-center gap-1"></div>
+                <hr class="my-6 border-gray-100 dark:border-slate-700">
+
+                <!-- Reviews Section -->
+                <div class="mt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold dark:text-white">Reviews & Ratings</h4>
+                        <div id="detail_rating" class="flex items-center gap-1"></div>
+                    </div>
+
+                    <!-- Add Review Form -->
+                    <div class="bg-gray-50 dark:bg-slate-800/50 rounded-xl p-4 mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h5 id="reviewFormTitle" class="text-sm font-semibold dark:text-white">Write a Review</h5>
+                            <button type="button" id="deleteReviewBtn" class="text-xs text-red-500 hover:text-red-600 hidden" onclick="deleteMyReview()">
+                                <i class="fa-solid fa-trash mr-1"></i> Delete My Review
+                            </button>
+                        </div>
+                        <form id="reviewForm" class="space-y-3">
+                            <input type="hidden" name="book_id" id="review_book_id">
+                            <div class="star-rating flex gap-1 text-xl">
+                                <input type="hidden" name="rating" id="review_rating_val" value="0">
+                                <i class="fa-regular fa-star star cursor-pointer"></i>
+                                <i class="fa-regular fa-star star cursor-pointer"></i>
+                                <i class="fa-regular fa-star star cursor-pointer"></i>
+                                <i class="fa-regular fa-star star cursor-pointer"></i>
+                                <i class="fa-regular fa-star star cursor-pointer"></i>
+                            </div>
+                            <textarea name="review_text" id="review_text_area" rows="2" class="form-control text-sm" placeholder="Share your thoughts about this book..."></textarea>
+                            <button type="submit" id="submitReviewBtn" class="btn btn-sm btn-primary w-full justify-center">
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Submit Review
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <div id="reviewsList" class="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Reviews will be loaded here -->
+                        <div class="text-center py-4 text-gray-400 text-sm">Loading reviews...</div>
+                    </div>
+                </div>
+
+                <!-- Request Action in Modal -->
+                <div class="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700 flex justify-end">
+                    <button id="modalRequestBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Confirmation Modal -->
+<div class="modal-overlay" id="requestModal">
+    <div class="modal-content max-w-sm text-center">
+        <div class="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-question text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2 dark:text-white">Request Book?</h3>
+        <p class="text-gray-500 mb-6">Are you sure you want to request this book? You will need to collect it from the library.</p>
+
+        <div class="flex gap-3 justify-center">
+            <input type="hidden" id="request_book_id">
+            <button onclick="confirmRequest()" class="btn btn-primary">Yes, Request</button>
+            <button onclick="closeModal('requestModal')" class="btn btn-outline">Cancel</button>
         </div>
     </div>
 </div>
@@ -274,6 +351,12 @@ require_once '../includes/header.php';
         document.getElementById('detail_publisher').textContent = book.publisher || 'N/A';
         document.getElementById('detail_total').textContent = book.total_copies;
         document.getElementById('detail_description').textContent = book.description || 'No description available.';
+
+        // Review Form setup
+        document.getElementById('review_book_id').value = book.book_id;
+        document.getElementById('review_rating_val').value = 0;
+        document.querySelector('#reviewForm textarea').value = '';
+        StarRating.updateStars(document.querySelectorAll('#reviewForm .star'), 0);
 
         const available = document.getElementById('detail_available');
         available.textContent = book.available_copies;
@@ -297,11 +380,210 @@ require_once '../includes/header.php';
             rating.innerHTML = '<span class="text-gray-400 text-sm">No ratings yet</span>';
         }
 
+        // Load Reviews
+        loadReviews(book.book_id);
+
+        // Setup Request Button in Modal
+        const reqBtn = document.getElementById('modalRequestBtn');
+        const statusEl = document.getElementById('detail_status');
+        // ...
+        // (rest of the Status logic remains same, but I'll provide the full function below to ensure consistency)
+        // ...
+        if (!book.is_active) {
+            statusEl.textContent = 'Inactive';
+            statusEl.className = 'font-medium ml-1 text-red-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-ban mr-2"></i> Inactive';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else if (book.available_copies <= 0) {
+            statusEl.textContent = 'Out of Stock';
+            statusEl.className = 'font-medium ml-1 text-yellow-600';
+            reqBtn.disabled = true;
+            reqBtn.innerHTML = '<i class="fa-solid fa-clock mr-2"></i> Out of Stock';
+            reqBtn.className = 'btn btn-outline opacity-50 cursor-not-allowed';
+        } else {
+            statusEl.textContent = 'Active';
+            statusEl.className = 'font-medium ml-1 text-green-600';
+            reqBtn.disabled = false;
+            reqBtn.innerHTML = '<i class="fa-solid fa-hand-holding-hand mr-2"></i> Request Book';
+            reqBtn.className = 'btn btn-primary';
+            reqBtn.onclick = function() {
+                closeModal('bookDetailModal');
+                requestBook(book.book_id);
+            };
+        }
+
         openModal('bookDetailModal');
     }
 
+    function loadReviews(bookId) {
+        const container = document.getElementById('reviewsList');
+        const formTitle = document.getElementById('reviewFormTitle');
+        const submitBtn = document.getElementById('submitReviewBtn');
+        const deleteBtn = document.getElementById('deleteReviewBtn');
+        const ratingInput = document.getElementById('review_rating_val');
+        const textArea = document.getElementById('review_text_area');
+
+        container.innerHTML = '<div class="text-center py-4 text-gray-400 text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading reviews...</div>';
+
+        fetch(`../api/get_reviews.php?book_id=${bookId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Handle user's own review
+                if (data.user_review) {
+                    formTitle.textContent = 'Update Your Review';
+                    submitBtn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i> Update Review';
+                    deleteBtn.classList.remove('hidden');
+                    ratingInput.value = data.user_review.rating;
+                    textArea.value = data.user_review.review_text;
+                    StarRating.updateStars(document.querySelectorAll('#reviewForm .star'), data.user_review.rating);
+                } else {
+                    formTitle.textContent = 'Write a Review';
+                    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> Submit Review';
+                    deleteBtn.classList.add('hidden');
+                    ratingInput.value = 0;
+                    textArea.value = '';
+                    StarRating.updateStars(document.querySelectorAll('#reviewForm .star'), 0);
+                }
+
+                if (data.success && data.reviews.length > 0) {
+                    container.innerHTML = data.reviews.map(review => `
+                        <div class="border-b border-gray-100 dark:border-slate-700 pb-3 last:border-0">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-semibold text-sm dark:text-white ${review.user_id == <?php echo $_SESSION['user_id']; ?> ? 'text-primary-600' : ''}">
+                                    ${review.reviewer_name} ${review.user_id == <?php echo $_SESSION['user_id']; ?> ? '(You)' : ''}
+                                </span>
+                                <div class="flex text-xs text-yellow-400">
+                                    ${Array(5).fill(0).map((_, i) => `<i class="fa-${i < review.rating ? 'solid' : 'regular'} fa-star"></i>`).join('')}
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">${review.review_text || '<span class="italic">No comment</span>'}</p>
+                            <span class="text-[10px] text-gray-400 mt-1 block">${review.created_at}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="text-center py-4 text-gray-400 text-sm">No reviews yet. Be the first to review!</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="text-center py-4 text-red-400 text-sm">Error loading reviews.</div>';
+            });
+    }
+
+
+    // Handle Review Submission
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const bookId = document.getElementById('review_book_id').value;
+        const rating = document.getElementById('review_rating_val').value;
+
+        if (rating == 0) {
+            Toast.error('Please select a star rating.');
+            return;
+        }
+
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalBtnHtml = submitBtn.innerHTML;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+        fetch('submit_review.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Toast.success(data.message);
+                    loadReviews(bookId);
+                    // Reset form
+                    document.getElementById('review_rating_val').value = 0;
+                    this.querySelector('textarea').value = '';
+                    this.querySelectorAll('.star').forEach(s => {
+                        s.classList.remove('filled', 'fa-solid');
+                        s.classList.add('fa-regular');
+                    });
+                } else {
+                    Toast.error(data.message);
+                }
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            });
+    });
+
     function requestBook(bookId) {
-        alert('Book request feature coming soon! Please visit the library desk to borrow this book.');
+        document.getElementById('request_book_id').value = bookId;
+        openModal('requestModal');
+    }
+
+    function confirmRequest() {
+        const bookId = document.getElementById('request_book_id').value;
+        const btn = document.querySelector(`button[onclick="requestBook(${bookId})"]`);
+
+        if (btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+        }
+
+        const formData = new FormData();
+        formData.append('book_id', bookId);
+
+        fetch('request_book.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeModal('requestModal');
+                if (data.success) {
+                    Toast.success(data.message);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    Toast.error(data.message);
+                    if (btn) {
+                        btn.innerHTML = originalText || '<i class="fa-solid fa-hand"></i> Request';
+                        btn.disabled = false;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Toast.error('An error occurred. Please try again.');
+                if (btn) {
+                    btn.innerHTML = originalText || '<i class="fa-solid fa-hand"></i> Request';
+                    btn.disabled = false;
+                }
+            });
+    }
+
+    async function deleteMyReview() {
+        const bookId = document.getElementById('review_book_id').value;
+        const confirmed = await ConfirmModal.show('Are you sure you want to delete your review?', 'Delete Review', 'danger');
+
+        if (!confirmed) return;
+
+        const formData = new FormData();
+        formData.append('book_id', bookId);
+
+        fetch('../api/delete_review.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Toast.success(data.message);
+                    loadReviews(bookId);
+                } else {
+                    Toast.error(data.message);
+                }
+            });
     }
 </script>
 

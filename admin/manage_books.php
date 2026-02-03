@@ -99,15 +99,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $pdo->prepare("
                 UPDATE books 
                 SET title = ?, author = ?, isbn = ?, publisher = ?, category_id = ?, 
-                    total_copies = ?, available_copies = ?, cover_image = ?, description = ?
+                    total_copies = ?, available_copies = ?, cover_image = ?, description = ?,
+                    is_active = CASE WHEN ? > 0 THEN 1 ELSE is_active END
                 WHERE book_id = ?
             ");
-            $stmt->execute([$title, $author, $isbn, $publisher, $category_id, $total_copies, $new_available, $cover_image, $description, $book_id]);
+            $stmt->execute([$title, $author, $isbn, $publisher, $category_id, $total_copies, $new_available, $cover_image, $description, $new_available, $book_id]);
 
             logActivity('book_update', "Updated book: {$title}");
             setFlash('success', "Book '{$title}' updated successfully!");
         } catch (PDOException $e) {
             setFlash('error', 'Failed to update book: ' . $e->getMessage());
+        }
+        redirect('admin/manage_books.php');
+    }
+
+    // Toggle Book Status (Active/Inactive)
+    if (isset($_POST['toggle_status'])) {
+        $book_id = (int) $_POST['book_id'];
+
+        try {
+            $stmt = $pdo->prepare("UPDATE books SET is_active = NOT is_active WHERE book_id = ?");
+            $stmt->execute([$book_id]);
+
+            $stmt = $pdo->prepare("SELECT title, is_active FROM books WHERE book_id = ?");
+            $stmt->execute([$book_id]);
+            $book = $stmt->fetch();
+
+            $status = $book['is_active'] ? 'activated' : 'deactivated';
+            logActivity('book_toggle', "{$status} book: {$book['title']}");
+            setFlash('success', "Book '{$book['title']}' has been {$status}.");
+        } catch (PDOException $e) {
+            setFlash('error', 'Failed to toggle status: ' . $e->getMessage());
         }
         redirect('admin/manage_books.php');
     }
@@ -180,12 +202,15 @@ require_once '../includes/header.php';
                     <div class="relative">
                         <input type="text" name="search" placeholder="Search books..."
                             value="<?php echo e($search); ?>"
-                            class="form-control pl-10">
+                            class="form-control pl-10 pr-20">
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-sm btn-secondary">
+                            Search
+                        </button>
                         <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
                 <div class="w-48">
-                    <select name="category" class="form-control">
+                    <select name="category" class="form-control" onchange="this.form.submit()">
                         <option value="">All Categories</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?php echo $cat['category_id']; ?>" <?php echo $category_filter == $cat['category_id'] ? 'selected' : ''; ?>>
@@ -194,9 +219,7 @@ require_once '../includes/header.php';
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fa-solid fa-filter"></i> Filter
-                </button>
+                <!-- Filter button removed - Auto filtering enabled -->
                 <?php if ($search || $category_filter): ?>
                     <a href="manage_books.php" class="btn btn-outline">Clear</a>
                 <?php endif; ?>
@@ -214,6 +237,8 @@ require_once '../includes/header.php';
                             <th>ISBN</th>
                             <th>Category</th>
                             <th>Copies</th>
+                            <th>Reviews</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -247,16 +272,45 @@ require_once '../includes/header.php';
                                         </span>
                                     </td>
                                     <td>
+                                        <div class="flex items-center gap-1 text-xs text-yellow-500">
+                                            <i class="fa-solid fa-star"></i>
+                                            <a href="manage_reviews.php?search=<?php echo urlencode($book['title']); ?>" class="hover:underline">
+                                                Reviews (<?php
+                                                            $rs = $pdo->prepare("SELECT COUNT(*) FROM reviews WHERE book_id = ?");
+                                                            $rs->execute([$book['book_id']]);
+                                                            echo $rs->fetchColumn();
+                                                            ?>)
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <?php if ($book['is_active']): ?>
+                                            <span class="badge badge-success">Active</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-danger">Inactive</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
                                         <div class="flex gap-2">
-                                            <button onclick='openEditModal(<?php echo json_encode($book); ?>)'
-                                                class="btn btn-sm btn-outline">
+                                            <button onclick='openEditModal(<?php echo htmlspecialchars(json_encode($book), ENT_QUOTES, 'UTF-8'); ?>)'
+                                                class="btn btn-sm btn-outline" title="Edit">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
-                                            <form method="POST" class="inline" onsubmit="return confirmDelete('Delete this book?')">
+
+                                            <form method="POST" class="inline" onsubmit="return confirmAction(event, '<?php echo $book['is_active'] ? 'Deactivate' : 'Activate'; ?> this book?', 'Confirm Status Change', 'primary')">
+                                                <input type="hidden" name="toggle_status" value="1">
+                                                <input type="hidden" name="book_id" value="<?php echo $book['book_id']; ?>">
+                                                <?php echo csrfInput(); ?>
+                                                <button type="submit" class="btn btn-sm btn-outline" title="<?php echo $book['is_active'] ? 'Deactivate' : 'Activate'; ?>">
+                                                    <i class="fa-solid <?php echo $book['is_active'] ? 'fa-ban' : 'fa-check'; ?>"></i>
+                                                </button>
+                                            </form>
+
+                                            <form method="POST" class="inline" onsubmit="return confirmAction(event, 'Delete this book?')">
                                                 <input type="hidden" name="delete_book" value="1">
                                                 <input type="hidden" name="book_id" value="<?php echo $book['book_id']; ?>">
                                                 <?php echo csrfInput(); ?>
-                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

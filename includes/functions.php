@@ -367,29 +367,7 @@ function logActivity($actionType, $description)
 /**
  * Send notification to user
  */
-function sendNotification($userId, $title, $message, $type = 'info', $link = null)
-{
-    global $pdo;
-    try {
-        $stmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, notification_type, link) VALUES (?, ?, ?, ?, ?)");
-        return $stmt->execute([$userId, $title, $message, $type, $link]);
-    } catch (Exception $e) {
-        error_log("Notification error: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Get unread notification count
- */
-function getUnreadNotificationCount($userId = null)
-{
-    global $pdo;
-    $userId = $userId ?? ($_SESSION['user_id'] ?? 0);
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
-    $stmt->execute([$userId]);
-    return $stmt->fetchColumn();
-}
+// Notification functions removed as per user request.
 
 // ======================================
 // SYSTEM SETTINGS
@@ -416,10 +394,23 @@ function getSetting($key, $default = null)
  */
 function getBorrowLimit()
 {
-    if (isTeacher()) {
-        return (int) getSetting('max_books_teacher', MAX_BOOKS_TEACHER);
+    // Default limit (fallback)
+    $limit = 3;
+
+    // Check role-based limits
+    // For now, strictly enforcing student limit or default.
+    // Teachers and Admins might have higher/no limits, which can be handled by system settings if needed.
+    // If we want to allow admins unlimited, we can return true.
+    if (isLoggedIn() && $_SESSION['role'] == 'admin') return PHP_INT_MAX; // Admins can borrow unlimited
+
+    if (isLoggedIn() && $_SESSION['role'] == 'student') {
+        $limit = (int) getSetting('max_books_student', defined('MAX_BOOKS_STUDENT') ? MAX_BOOKS_STUDENT : 3);
+    } elseif (isLoggedIn() && $_SESSION['role'] == 'teacher') {
+        // Teacher role removed, but keeping fallback logic for safety or legacy data
+        $limit = 5;
     }
-    return (int) getSetting('max_books_student', MAX_BOOKS_STUDENT);
+
+    return $limit;
 }
 
 /**
@@ -479,7 +470,9 @@ function getStatusBadge($status)
     $badges = [
         'issued' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">Issued</span>',
         'returned' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Returned</span>',
-        'overdue' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Overdue</span>'
+        'overdue' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Overdue</span>',
+        'requested' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">Requested</span>',
+        'cancelled' => '<span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">Cancelled</span>'
     ];
     return $badges[$status] ?? '';
 }

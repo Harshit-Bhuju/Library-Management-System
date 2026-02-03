@@ -157,7 +157,7 @@ require_once '../includes/header.php';
             <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold dark:text-white">
-                        <i class="fa-solid fa-tags text-primary-500 mr-2"></i>
+                        <i class="fa-solid fa-folder-open text-primary-500 mr-2"></i>
                         Categories
                     </h3>
                     <button onclick="openModal('addCategoryModal')" class="btn btn-sm btn-primary">

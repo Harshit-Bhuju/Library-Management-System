@@ -163,11 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Log activity (using system for unlogged actions)
                 $newUserId = $pdo->lastInsertId();
 
-                // Create default settings for user
-                $pdo->prepare("INSERT INTO user_settings (user_id) VALUES (?)")->execute([$newUserId]);
-
                 // Send welcome notification
-                sendNotification($newUserId, 'Welcome!', 'Welcome to the Library Management System. Start exploring our collection!', 'success', 'student/browse_books.php');
+                // sendNotification removed
 
                 setFlash('success', 'Registration successful! Please login with your email and password.');
                 redirect('index.php');

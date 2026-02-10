@@ -95,7 +95,7 @@ require_once '../includes/header.php';
 
         <!-- Reviews Grid/Table -->
         <div class="stat-card" data-aos="fade-up">
-            <div class="overflow-x-auto">
+            <div class="data-table-container">
                 <table class="data-table">
                     <thead>
                         <tr>

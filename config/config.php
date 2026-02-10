@@ -37,6 +37,11 @@ define('MAX_BOOKS_STUDENT', 3);
 define('MAX_BOOKS_TEACHER', 5);
 define('CURRENCY_SYMBOL', 'NPR');
 
+// eSewa Configuration (Sandbox)
+define('ESEWA_MERCHANT_CODE', 'EPAYTEST');
+define('ESEWA_SECRET_KEY', '8gBm/:&EnhH.1/q');
+define('ESEWA_URL', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form');
+
 // Upload Configuration
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('COVERS_PATH', UPLOAD_PATH . 'covers/');

@@ -4,7 +4,7 @@ require_once '../includes/functions.php';
 requireAdmin();
 
 // Date range filter
-$start_date = isset($_GET['start']) ? sanitize($_GET['start']) : date('Y-m-01');
+$start_date = isset($_GET['start']) ? sanitize($_GET['start']) : date('Y-01-01');
 $end_date = isset($_GET['end']) ? sanitize($_GET['end']) : date('Y-m-d');
 
 // Fetch detailed analytics
@@ -71,16 +71,16 @@ $popular_books->execute([$start_date, $end_date]);
 $popular = $popular_books->fetchAll();
 
 // Fine collection
+// Logic: Collected = SUM of fine_amount where fine_paid = 1 and (return_date or record date in range)
+// Pending = Current SUM of fine_amount for all unpaid overdue items
 $fines = $pdo->prepare("
     SELECT 
-        COALESCE(SUM(fine_amount), 0) as total_fines,
-        COALESCE(SUM(CASE WHEN fine_paid = 1 THEN fine_amount ELSE 0 END), 0) as collected,
-        COALESCE(SUM(CASE WHEN fine_paid = 0 THEN fine_amount ELSE 0 END), 0) as pending
-    FROM issued_books
-    WHERE issue_date BETWEEN ? AND ?
+        (SELECT COALESCE(SUM(fine_amount), 0) FROM issued_books WHERE fine_paid = 1 AND return_date BETWEEN ? AND ?) as collected,
+        (SELECT COALESCE(SUM(fine_amount), 0) FROM issued_books WHERE fine_paid = 0 AND (status = 'overdue' OR fine_amount > 0)) as pending
 ");
 $fines->execute([$start_date, $end_date]);
 $fine_stats = $fines->fetch();
+$fine_stats['total_fines'] = $fine_stats['collected'] + $fine_stats['pending'];
 
 // Summary stats
 $summary = $pdo->prepare("

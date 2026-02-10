@@ -209,7 +209,7 @@ require_once '../includes/header.php';
                         <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
-                <div class="w-48">
+                <div class="w-full sm:w-48">
                     <select name="category" class="form-control" onchange="this.form.submit()">
                         <option value="">All Categories</option>
                         <?php foreach ($categories as $cat): ?>
@@ -228,7 +228,7 @@ require_once '../includes/header.php';
 
         <!-- Books Table -->
         <div class="stat-card" data-aos="fade-up">
-            <div class="overflow-x-auto">
+            <div class="data-table-container">
                 <table class="data-table" id="booksTable">
                     <thead>
                         <tr>

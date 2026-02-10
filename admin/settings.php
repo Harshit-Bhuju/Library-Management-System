@@ -114,7 +114,7 @@ require_once '../includes/header.php';
                             value="<?php echo e($settings['library_name'] ?? 'Library Management System'); ?>">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="form-label">Default Borrow Period (days)</label>
                             <input type="number" name="borrow_period_days" class="form-control" min="1" max="90"

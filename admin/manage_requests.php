@@ -117,8 +117,8 @@ require_once '../includes/header.php';
         <?php echo getFlash(); ?>
 
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+            <div class="data-table-container">
+                <table class="data-table text-left">
                     <thead>
                         <tr class="bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-200 text-sm uppercase tracking-wider">
                             <th class="px-6 py-4 font-semibold">Book</th>

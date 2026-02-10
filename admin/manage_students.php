@@ -189,7 +189,7 @@ require_once '../includes/header.php';
 
         <!-- Users Table -->
         <div class="stat-card" data-aos="fade-up">
-            <div class="overflow-x-auto">
+            <div class="data-table-container">
                 <table class="data-table">
                     <thead>
                         <tr>

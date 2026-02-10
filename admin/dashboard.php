@@ -10,9 +10,19 @@ $issued_books = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status IN (
 $overdue_books = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status = 'overdue'")->fetchColumn();
 $total_returned = $pdo->query("SELECT COUNT(*) FROM issued_books WHERE status = 'returned'")->fetchColumn();
 $total_fines = $pdo->query("SELECT COALESCE(SUM(fine_amount), 0) FROM issued_books WHERE fine_paid = 0")->fetchColumn();
+$total_collected_fines = $pdo->query("SELECT COALESCE(SUM(fine_amount), 0) FROM issued_books WHERE fine_paid = 1")->fetchColumn();
 
-// Update overdue status
+// Update overdue status and calculated fines
+$fine_per_day = (float) getSetting('fine_per_day', DEFAULT_FINE_PER_DAY);
 $pdo->query("UPDATE issued_books SET status = 'overdue' WHERE status = 'issued' AND due_date < CURDATE()");
+
+// Update fine amounts for all unpaid overdue books
+// Logic: fine = days_overdue * fine_per_day
+$pdo->query("
+    UPDATE issued_books 
+    SET fine_amount = DATEDIFF(CURDATE(), due_date) * {$fine_per_day} 
+    WHERE status = 'overdue' AND fine_paid = 0
+");
 
 // Recent Activities
 $stmt = $pdo->query("
@@ -168,6 +178,19 @@ require_once '../includes/header.php';
                     </div>
                 </div>
             </div>
+
+            <div class="stat-card p-5" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Collected</p>
+                        <h2 class="text-xl font-bold mt-2 text-green-600">NPR <?php echo number_format($total_collected_fines, 2); ?></h2>
+                        <p class="text-xs text-gray-400 mt-1">Fine Revenue</p>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg text-green-600">
+                        <i class="fa-solid fa-money-bill-trend-up text-xl"></i>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Charts Row -->
@@ -196,7 +219,7 @@ require_once '../includes/header.php';
                 <a href="issue_book.php" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All →</a>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="data-table-container">
                 <table class="data-table">
                     <thead>
                         <tr>

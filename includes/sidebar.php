@@ -1,7 +1,12 @@
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-        <i class="fa-solid fa-book-open"></i>
-        <span>LMS Portal</span>
+    <div class="sidebar-logo flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-book-open"></i>
+            <span>LMS Portal</span>
+        </div>
+        <button id="sidebarClose" class="lg:hidden p-2 text-gray-400 hover:text-white">
+            <i class="fa-solid fa-times text-xl"></i>
+        </button>
     </div>
 
     <nav>
@@ -42,6 +47,9 @@
             <a href="<?php echo BASE_URL; ?>admin/borrow_history.php" class="nav-link <?php echo (currentPage() == 'borrow_history.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-history"></i> Borrow History
             </a>
+            <a href="<?php echo BASE_URL; ?>admin/transaction_history.php" class="nav-link <?php echo (currentPage() == 'transaction_history.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Fine Payments
+            </a>
 
         <?php else: ?>
             <!-- Student Links -->
@@ -59,6 +67,9 @@
             <a href="<?php echo BASE_URL; ?>student/borrow_history.php" class="nav-link <?php echo (currentPage() == 'borrow_history.php') ? 'active' : ''; ?>">
                 <i class="fa-solid fa-clock-rotate-left"></i> My History
             </a>
+            <a href="<?php echo BASE_URL; ?>student/transaction_history.php" class="nav-link <?php echo (currentPage() == 'transaction_history.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-receipt"></i> My Transactions
+            </a>
 
             <p class="nav-section-title">Account</p>
 
@@ -70,6 +81,11 @@
 
         <!-- Common Links for All Logged In Users -->
         <div class="mt-auto pt-4 border-t border-gray-700">
+            <!-- About Us -->
+            <a href="<?php echo BASE_URL; ?>about.php" class="nav-link <?php echo (currentPage() == 'about.php') ? 'active' : ''; ?>">
+                <i class="fa-solid fa-circle-info"></i> About Us
+            </a>
+
             <!-- Theme Toggle -->
             <button onclick="ThemeManager.toggle()" class="nav-link w-full text-left">
                 <i class="fa-solid fa-moon dark:hidden"></i>
@@ -98,3 +114,4 @@
         </div>
     <?php endif; ?>
 </aside>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>

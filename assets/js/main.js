@@ -290,19 +290,46 @@ function filterTableSimple(tableId, colIndex) {
 const Sidebar = {
     init() {
         const toggle = document.getElementById('sidebarToggle');
+        const closeBtn = document.getElementById('sidebarClose');
         const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
 
         if (toggle && sidebar) {
-            toggle.addEventListener('click', () => {
+            const toggleSidebar = () => {
                 sidebar.classList.toggle('open');
+                if (backdrop) backdrop.classList.toggle('active');
+
+                // Prevent body scroll when menu is open on mobile
+                if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            };
+
+            const closeSidebar = () => {
+                sidebar.classList.remove('open');
+                if (backdrop) backdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleSidebar();
             });
 
-            // Close sidebar on outside click (mobile)
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth <= 1024 &&
-                    !sidebar.contains(e.target) &&
-                    !toggle.contains(e.target)) {
-                    sidebar.classList.remove('open');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closeSidebar);
+            }
+
+            // Close sidebar on route change or escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                    closeSidebar();
                 }
             });
         }

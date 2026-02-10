@@ -84,7 +84,7 @@ require_once '../includes/header.php';
                 <p class="text-sm text-gray-500">Returned</p>
             </div>
             <div class="stat-card text-center" data-aos="fade-up" data-aos-delay="200">
-                <p class="text-2xl font-bold <?php echo $stats['pending_fines'] > 0 ? 'text-red-600' : 'text-gray-400'; ?>">$<?php echo number_format($stats['pending_fines'], 2); ?></p>
+                <p class="text-2xl font-bold <?php echo $stats['pending_fines'] > 0 ? 'text-red-600' : 'text-gray-400'; ?>"><?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($stats['pending_fines'], 2); ?></p>
                 <p class="text-sm text-gray-500">Pending Fines</p>
             </div>
         </div>
@@ -142,12 +142,20 @@ require_once '../includes/header.php';
                                     <td><?php echo getStatusBadge($item['status']); ?></td>
                                     <td>
                                         <?php if ($item['fine_amount'] > 0): ?>
-                                            <span class="<?php echo $item['fine_paid'] ? 'text-green-600' : 'text-red-600 font-medium'; ?>">
-                                                $<?php echo number_format($item['fine_amount'], 2); ?>
-                                                <?php if ($item['fine_paid']): ?>
-                                                    <i class="fa-solid fa-check ml-1" title="Paid"></i>
+                                            <div class="flex items-center gap-2">
+                                                <span class="<?php echo $item['fine_paid'] ? 'text-green-600' : 'text-red-600 font-medium'; ?>">
+                                                    <?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($item['fine_amount'], 2); ?>
+                                                    <?php if ($item['fine_paid']): ?>
+                                                        <i class="fa-solid fa-check ml-1" title="Paid"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                                <?php if (!$item['fine_paid'] && $item['status'] !== 'returned'): ?>
+                                                    <a href="pay_fine.php?issue_id=<?php echo $item['issue_id']; ?>"
+                                                        class="btn btn-xs btn-primary">
+                                                        <i class="fa-solid fa-wallet mr-1"></i> Pay
+                                                    </a>
                                                 <?php endif; ?>
-                                            </span>
+                                            </div>
                                         <?php else: ?>
                                             <span class="text-gray-400">-</span>
                                         <?php endif; ?>

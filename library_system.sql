@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 03, 2026 at 04:53 PM
+-- Generation Time: Feb 10, 2026 at 02:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -115,7 +115,101 @@ INSERT INTO `activity_log` (`log_id`, `user_id`, `action_type`, `action_descript
 (70, 7, 'book_toggle', 'deactivated book: Living Growth Vol 3', '::1', '2026-02-03 15:48:25'),
 (71, 8, 'login', 'User logged in successfully', '::1', '2026-02-03 15:48:40'),
 (72, 8, 'book_review', 'Reviewed book ID: 260 with 5 stars', '::1', '2026-02-03 15:49:21'),
-(73, 7, 'login', 'User logged in successfully', '::1', '2026-02-03 15:51:39');
+(73, 7, 'login', 'User logged in successfully', '::1', '2026-02-03 15:51:39'),
+(74, 13, 'login', 'User logged in successfully', '::1', '2026-02-03 15:54:47'),
+(75, 13, 'book_request', 'Requested book ID: 298', '::1', '2026-02-03 15:55:40'),
+(76, 7, 'book_issue', 'Issued \'Advanced Chemistry\' to Ram', '::1', '2026-02-03 15:56:37'),
+(77, 13, 'book_request', 'Requested book ID: 133', '::1', '2026-02-03 15:56:37'),
+(78, 13, 'book_request_cancel', 'Cancelled request ID: 11', '::1', '2026-02-03 15:59:49'),
+(79, 13, 'book_request_cancel', 'Cancelled request ID: 13', '::1', '2026-02-03 15:59:52'),
+(80, 7, 'login', 'User logged in successfully', '::1', '2026-02-04 06:56:19'),
+(81, 8, 'login', 'User logged in successfully', '::1', '2026-02-04 06:57:23'),
+(82, 8, 'book_review', 'Reviewed book ID: 260 with 5 stars', '::1', '2026-02-04 06:57:47'),
+(83, 8, 'book_review', 'Reviewed book ID: 260 with 2 stars', '::1', '2026-02-04 06:57:54'),
+(84, 8, 'login', 'User logged in successfully', '::1', '2026-02-04 07:09:20'),
+(85, 7, 'login', 'User logged in successfully', '::1', '2026-02-04 07:10:11'),
+(86, 7, 'book_toggle', 'deactivated book: Handbook of Adventures', '::1', '2026-02-04 07:10:50'),
+(87, 7, 'book_toggle', 'activated book: Handbook of Adventures', '::1', '2026-02-04 07:10:56'),
+(88, 9, 'login', 'User logged in successfully', '::1', '2026-02-04 07:30:42'),
+(89, 9, 'book_request', 'Requested book ID: 295', '::1', '2026-02-04 07:38:09'),
+(90, 7, 'login', 'User logged in successfully', '::1', '2026-02-04 07:39:15'),
+(91, 7, 'book_approve', 'Approved issue ID: 14', '::1', '2026-02-04 07:39:32'),
+(92, 9, 'book_request', 'Requested book ID: 260', '::1', '2026-02-04 07:43:44'),
+(93, 7, 'book_approve', 'Approved issue ID: 15', '::1', '2026-02-04 07:43:54'),
+(94, 7, 'book_return', 'Returned \'Handbook of Adventures\' from user', '::1', '2026-02-04 07:44:41'),
+(95, 9, 'book_request', 'Requested book ID: 260', '::1', '2026-02-04 07:46:20'),
+(96, 9, 'book_request', 'Requested book ID: 261', '::1', '2026-02-04 07:46:24'),
+(97, 7, 'book_approve', 'Approved issue ID: 17', '::1', '2026-02-04 07:46:58'),
+(98, 7, 'book_approve', 'Approved issue ID: 16', '::1', '2026-02-04 07:47:03'),
+(99, 7, 'book_update', 'Updated book: Handbook of Adventures', '::1', '2026-02-04 07:49:48'),
+(100, 7, 'book_toggle', 'deactivated book: Handbook of Adventures', '::1', '2026-02-04 07:49:58'),
+(101, 7, 'book_toggle', 'activated book: Handbook of Adventures', '::1', '2026-02-04 07:50:14'),
+(102, 7, 'book_issue', 'Issued \'Advanced Chemistry\' to Suman Neupane', '::1', '2026-02-04 07:51:48'),
+(103, 8, 'login', 'User logged in successfully', '::1', '2026-02-07 14:55:17'),
+(104, 8, 'login', 'User logged in successfully', '::1', '2026-02-07 15:06:02'),
+(105, 7, 'login', 'User logged in via Remember Me', '::1', '2026-02-07 15:06:35'),
+(106, 7, 'login', 'User logged in successfully', '::1', '2026-02-07 15:06:48'),
+(107, 7, 'book_return', 'Returned \'Handbook of Adventures\' from user', '::1', '2026-02-07 15:07:19'),
+(108, 7, 'book_return', 'Returned \'Advanced Biology\' from Royan Baidar', '::1', '2026-02-07 15:07:21'),
+(109, 7, 'book_return', 'Returned \'Advanced Motion\' from user', '::1', '2026-02-07 15:07:23'),
+(110, 7, 'book_return', 'Returned \'Introduction to Knowledge (2015 Edition)\' from user', '::1', '2026-02-07 15:07:25'),
+(111, 7, 'book_return', 'Returned \'Advanced Biology\' from user', '::1', '2026-02-07 15:07:27'),
+(112, 7, 'book_return', 'Returned \'Advanced Chemistry\' from Ram', '::1', '2026-02-07 15:07:31'),
+(113, 7, 'book_return', 'Returned \'Guide to Facts\' from user', '::1', '2026-02-07 15:07:33'),
+(114, 7, 'book_return', 'Returned \'Essentials of Facts (2011 Edition)\' from user', '::1', '2026-02-07 15:07:35'),
+(115, 7, 'book_return', 'Returned \'Advanced Chemistry\' from Suman Neupane', '::1', '2026-02-07 15:07:38'),
+(116, 7, 'book_return', 'Returned \'The Art of Happiness Vol 5\' from user (Fine: NPR 11.5)', '::1', '2026-02-07 15:37:37'),
+(117, 7, 'book_return', 'Returned \'World of Adventures\' from user (Fine: NPR 11.5)', '::1', '2026-02-07 15:44:16'),
+(118, 7, 'book_return', 'Returned \'World of Prose\' from user (Fine: NPR 9)', '::1', '2026-02-07 15:46:15'),
+(119, 7, 'debug_return', 'Issue: 23, Fine: 9, Paid: YES', '::1', '2026-02-07 15:56:02'),
+(120, 7, 'book_return', 'Returned \'Cosmic Genetics\' from user (Fine: NPR 9)', '::1', '2026-02-07 15:56:02'),
+(121, 7, 'debug_return', 'Issue: 24, Fine: 6.5, Paid: YES', '::1', '2026-02-07 15:56:05'),
+(122, 7, 'book_return', 'Returned \'Principles of Genetics\' from user (Fine: NPR 6.5)', '::1', '2026-02-07 15:56:05'),
+(123, 8, 'login', 'User logged in via Remember Me', '::1', '2026-02-07 15:56:24'),
+(124, 7, 'book_return', 'Returned \'Understanding Facts\' from Suman Neupane (Fine: NPR 1)', '::1', '2026-02-07 16:13:10'),
+(125, 8, 'login', 'User logged in successfully', '::1', '2026-02-07 16:29:56'),
+(126, 7, 'login', 'User logged in successfully', '::1', '2026-02-07 16:32:31'),
+(127, 7, 'login', 'User logged in successfully', '::1', '2026-02-07 16:33:04'),
+(128, 8, 'login', 'User logged in successfully', '::1', '2026-02-07 16:36:04'),
+(129, 8, 'login', 'User logged in successfully', '::1', '2026-02-07 16:38:44'),
+(130, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 04:48:23'),
+(131, 8, 'book_review', 'Reviewed book ID: 261 with 4 stars', '::1', '2026-02-08 04:53:43'),
+(132, 8, 'book_request', 'Requested book ID: 261', '::1', '2026-02-08 04:53:49'),
+(133, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 05:06:52'),
+(134, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 05:16:01'),
+(135, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 05:16:52'),
+(136, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 05:18:24'),
+(137, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 05:40:55'),
+(138, 8, 'book_request', 'Requested book ID: 234', '::1', '2026-02-08 05:41:21'),
+(139, 7, 'book_approve', 'Approved issue ID: 38', '::1', '2026-02-08 05:42:05'),
+(140, 7, 'book_return', 'Returned \'Cosmic Gravity Vol 4\' from user', '::1', '2026-02-08 05:43:32'),
+(141, 14, 'login', 'User logged in successfully', '::1', '2026-02-08 06:38:43'),
+(142, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 06:39:22'),
+(143, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 06:45:54'),
+(144, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 06:49:48'),
+(145, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 06:52:23'),
+(146, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:05:12'),
+(147, 8, 'book_request', 'Requested book ID: 262', '::1', '2026-02-08 07:08:56'),
+(148, 7, 'book_reject', 'Rejected (Cancelled) issue ID: 37', '::1', '2026-02-08 07:09:11'),
+(149, 7, 'book_reject', 'Rejected (Cancelled) issue ID: 39', '::1', '2026-02-08 07:09:22'),
+(150, 8, 'book_request', 'Requested book ID: 123', '::1', '2026-02-08 07:13:38'),
+(151, 7, 'book_approve', 'Approved issue ID: 40', '::1', '2026-02-08 07:13:51'),
+(152, 7, 'book_return', 'Returned \'Understanding Gravity Vol 3\' from user', '::1', '2026-02-08 07:14:50'),
+(153, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:21:57'),
+(154, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:25:11'),
+(155, 8, 'login', 'User logged in via Remember Me', '::1', '2026-02-08 07:36:45'),
+(156, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:37:11'),
+(157, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 07:40:39'),
+(158, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:49:03'),
+(159, 8, 'login', 'User logged in successfully', '::1', '2026-02-08 07:52:01'),
+(160, 8, 'book_request', 'Requested book ID: 260', '::1', '2026-02-08 07:52:48'),
+(161, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 07:52:52'),
+(162, 7, 'book_approve', 'Approved issue ID: 41', '::1', '2026-02-08 07:53:13'),
+(163, 7, 'book_return', 'Returned \'World of Facts\' from Suman Neupane (Fine: NPR 2.5)', '::1', '2026-02-08 07:55:38'),
+(164, 7, 'book_return', 'Returned \'The Art of Happiness Vol 5\' from user (Fine: NPR 2.5)', '::1', '2026-02-08 07:56:32'),
+(165, 8, 'book_request', 'Requested book ID: 370', '::1', '2026-02-08 07:56:49'),
+(166, 7, 'book_approve', 'Approved issue ID: 42', '::1', '2026-02-08 07:57:02'),
+(167, 7, 'login', 'User logged in successfully', '::1', '2026-02-08 07:59:00');
 
 -- --------------------------------------------------------
 
@@ -269,7 +363,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (120, '9786176268286', 'The Rise of Peace', 'Michael Taylor', 'Wiley', '2010', 5, 'A distinctive History book titled \'The Rise of Peace\'. Authored by Michael Taylor, this book delves into the core concepts of history, offering valuable insights for readers.', 13, 13, 'HIST-565', 'uploads/covers/understory.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
 (121, '9787357199455', 'Evolution of Universe', 'Michael Davis', 'HarperCollins', '2024', 3, 'A distinctive Science book titled \'Evolution of Universe\'. Authored by Michael Davis, this book delves into the core concepts of science, offering valuable insights for readers.', 9, 9, 'SCI-526', 'uploads/covers/a_million_to_one.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
 (122, '9783771161421', 'Handbook of Facts (2004 Edition)', 'Sarah Jones', 'Oxford Press', '2021', 8, 'A distinctive Reference book titled \'Handbook of Facts (2004 Edition)\'. Authored by Sarah Jones, this book delves into the core concepts of reference, offering valuable insights for readers.', 13, 13, 'REF-456', 'uploads/covers/bad.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
-(123, '9781976576402', 'Understanding Gravity Vol 3', 'James Smith', 'OReilly', '2012', 3, 'A distinctive Science book titled \'Understanding Gravity Vol 3\'. Authored by James Smith, this book delves into the core concepts of science, offering valuable insights for readers.', 9, 9, 'SCI-392', 'uploads/covers/beyond_the_ocean__door.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
+(123, '9781976576402', 'Understanding Gravity Vol 3', 'James Smith', 'OReilly', '2012', 3, 'A distinctive Science book titled \'Understanding Gravity Vol 3\'. Authored by James Smith, this book delves into the core concepts of science, offering valuable insights for readers.', 9, 9, 'SCI-392', 'uploads/covers/beyond_the_ocean__door.png', '2026-02-02 15:59:31', '2026-02-08 07:14:50', 1),
 (124, '9789448239125', 'Cyber Security', 'Bob Wilson', 'HarperCollins', '2017', 4, 'A distinctive Technology book titled \'Cyber Security\'. Authored by Bob Wilson, this book delves into the core concepts of technology, offering valuable insights for readers.', 4, 4, 'TECH-234', 'uploads/covers/bigger&better.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
 (125, '9785635355592', 'Guide to Leadership Vol 4', 'Robert Davis', 'Pearson', '2018', 9, 'A distinctive Self-Help book titled \'Guide to Leadership Vol 4\'. Authored by Robert Davis, this book delves into the core concepts of self-help, offering valuable insights for readers.', 8, 8, 'SH-921', 'uploads/covers/birds_of_a_feather.png', '2026-02-02 15:59:31', '2026-02-02 15:59:31', 1),
 (126, '9786793968027', 'Handbook of Knowledge (2022 Edition)', 'Mary Moore', 'Wiley', '2023', 2, 'A distinctive Non-Fiction book titled \'Handbook of Knowledge (2022 Edition)\'. Authored by Mary Moore, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 8, 8, 'NF-319', 'uploads/covers/cherry.png', '2026-02-02 15:59:31', '2026-02-03 14:24:39', 1),
@@ -381,7 +475,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (231, '9780837959654', 'Battle for Europe Vol 1', 'David Johnson', 'Oxford Press', '2022', 5, 'A distinctive History book titled \'Battle for Europe Vol 1\'. Authored by David Johnson, this book delves into the core concepts of history, offering valuable insights for readers.', 3, 3, 'HIST-196', 'uploads/covers/harry_potter.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (232, '9784119751385', 'Handbook of Prose', 'Robert Miller', 'Penguin', '2014', 7, 'A distinctive Literature book titled \'Handbook of Prose\'. Authored by Robert Miller, this book delves into the core concepts of literature, offering valuable insights for readers.', 4, 4, 'LIT-198', 'uploads/covers/man_in_the_woods.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (233, '9784871818266', 'The Hidden Time', 'Alice Johnson', 'Wiley', '2019', 1, 'A distinctive Fiction book titled \'The Hidden Time\'. Authored by Alice Johnson, this book delves into the core concepts of fiction, offering valuable insights for readers.', 3, 3, 'FIC-423', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(234, '9784705560866', 'Cosmic Gravity Vol 4', 'Alice Smith', 'Oxford Press', '2021', 3, 'A distinctive Science book titled \'Cosmic Gravity Vol 4\'. Authored by Alice Smith, this book delves into the core concepts of science, offering valuable insights for readers.', 15, 15, 'SCI-905', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
+(234, '9784705560866', 'Cosmic Gravity Vol 4', 'Alice Smith', 'Oxford Press', '2021', 3, 'A distinctive Science book titled \'Cosmic Gravity Vol 4\'. Authored by Alice Smith, this book delves into the core concepts of science, offering valuable insights for readers.', 15, 15, 'SCI-905', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-08 05:43:32', 1),
 (235, '9783464154238', 'Dreams of Forest', 'Sarah Davis', 'Pearson', '2013', 1, 'A distinctive Fiction book titled \'Dreams of Forest\'. Authored by Sarah Davis, this book delves into the core concepts of fiction, offering valuable insights for readers.', 6, 6, 'FIC-740', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (236, '9780538119986', 'Digital Systems', 'Jane Miller', 'HarperCollins', '2016', 4, 'A distinctive Technology book titled \'Digital Systems\'. Authored by Jane Miller, this book delves into the core concepts of technology, offering valuable insights for readers.', 3, 3, 'TECH-994', 'uploads/covers/really_good.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (237, '9784503076262', 'Guide to Prose Vol 2', 'Michael Miller', 'OReilly', '2025', 7, 'A distinctive Literature book titled \'Guide to Prose Vol 2\'. Authored by Michael Miller, this book delves into the core concepts of literature, offering valuable insights for readers.', 9, 9, 'LIT-465', 'uploads/covers/success.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
@@ -397,22 +491,22 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (247, '9781696944157', 'Whispering Promise Vol 3', 'James Miller', 'Pearson', '2011', 1, 'A distinctive Fiction book titled \'Whispering Promise Vol 3\'. Authored by James Miller, this book delves into the core concepts of fiction, offering valuable insights for readers.', 7, 7, 'FIC-136', 'uploads/covers/debbie_berne.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (248, '9789021527129', 'Broken Journey', 'Emily Johnson', 'Cambridge', '2024', 1, 'A distinctive Fiction book titled \'Broken Journey\'. Authored by Emily Johnson, this book delves into the core concepts of fiction, offering valuable insights for readers.', 11, 11, 'FIC-410', 'uploads/covers/enchanted_to_meet_you.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (249, '9789579172569', 'Medieval Greece', 'Michael Smith', 'Scholastic', '2020', 5, 'A distinctive History book titled \'Medieval Greece\'. Authored by Michael Smith, this book delves into the core concepts of history, offering valuable insights for readers.', 12, 12, 'HIST-492', 'uploads/covers/formula.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(250, '9784046055726', 'The Art of Happiness Vol 5', 'Jane Davis', 'OReilly', '2016', 9, 'A distinctive Self-Help book titled \'The Art of Happiness Vol 5\'. Authored by Jane Davis, this book delves into the core concepts of self-help, offering valuable insights for readers.', 12, 12, 'SH-798', 'uploads/covers/green_witchcraft.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(251, '9781979814783', 'World of Prose', 'Emily Jones', 'Springer', '2019', 7, 'A distinctive Literature book titled \'World of Prose\'. Authored by Emily Jones, this book delves into the core concepts of literature, offering valuable insights for readers.', 6, 6, 'LIT-413', 'uploads/covers/harry_potter.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(252, '9786590979714', 'Modern Universe Vol 4', 'Emily Wilson', 'OReilly', '2025', 3, 'A distinctive Science book titled \'Modern Universe Vol 4\'. Authored by Emily Wilson, this book delves into the core concepts of science, offering valuable insights for readers.', 12, 12, 'SCI-381', 'uploads/covers/man_in_the_woods.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(253, '9789059585375', 'World of Adventures', 'Alice Taylor', 'Springer', '2016', 10, 'A distinctive Children book titled \'World of Adventures\'. Authored by Alice Taylor, this book delves into the core concepts of children, offering valuable insights for readers.', 6, 6, 'KIDS-726', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(254, '9780446804676', 'Cosmic Genetics', 'Jane Moore', 'Penguin', '2010', 3, 'A distinctive Science book titled \'Cosmic Genetics\'. Authored by Jane Moore, this book delves into the core concepts of science, offering valuable insights for readers.', 10, 10, 'SCI-869', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(255, '9786824523806', 'Principles of Genetics', 'Alice Miller', 'HarperCollins', '2022', 3, 'A distinctive Science book titled \'Principles of Genetics\'. Authored by Alice Miller, this book delves into the core concepts of science, offering valuable insights for readers.', 13, 13, 'SCI-319', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
+(250, '9784046055726', 'The Art of Happiness Vol 5', 'Jane Davis', 'OReilly', '2016', 9, 'A distinctive Self-Help book titled \'The Art of Happiness Vol 5\'. Authored by Jane Davis, this book delves into the core concepts of self-help, offering valuable insights for readers.', 12, 12, 'SH-798', 'uploads/covers/green_witchcraft.png', '2026-02-02 15:59:36', '2026-02-08 07:56:32', 1),
+(251, '9781979814783', 'World of Prose', 'Emily Jones', 'Springer', '2019', 7, 'A distinctive Literature book titled \'World of Prose\'. Authored by Emily Jones, this book delves into the core concepts of literature, offering valuable insights for readers.', 6, 6, 'LIT-413', 'uploads/covers/harry_potter.png', '2026-02-02 15:59:36', '2026-02-07 16:16:59', 1),
+(252, '9786590979714', 'Modern Universe Vol 4', 'Emily Wilson', 'OReilly', '2025', 3, 'A distinctive Science book titled \'Modern Universe Vol 4\'. Authored by Emily Wilson, this book delves into the core concepts of science, offering valuable insights for readers.', 12, 11, 'SCI-381', 'uploads/covers/man_in_the_woods.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(253, '9789059585375', 'World of Adventures', 'Alice Taylor', 'Springer', '2016', 10, 'A distinctive Children book titled \'World of Adventures\'. Authored by Alice Taylor, this book delves into the core concepts of children, offering valuable insights for readers.', 6, 5, 'KIDS-726', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(254, '9780446804676', 'Cosmic Genetics', 'Jane Moore', 'Penguin', '2010', 3, 'A distinctive Science book titled \'Cosmic Genetics\'. Authored by Jane Moore, this book delves into the core concepts of science, offering valuable insights for readers.', 10, 9, 'SCI-869', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(255, '9786824523806', 'Principles of Genetics', 'Alice Miller', 'HarperCollins', '2022', 3, 'A distinctive Science book titled \'Principles of Genetics\'. Authored by Alice Miller, this book delves into the core concepts of science, offering valuable insights for readers.', 13, 12, 'SCI-319', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
 (259, '9783284417839', 'Living Growth Vol 3', 'Sarah Johnson', 'HarperCollins', '2013', 9, 'A distinctive Self-Help book titled &#039;Living Growth Vol 3&#039;. Authored by Sarah Johnson, this book delves into the core concepts of self-help, offering valuable insights for readers.', 6, 6, 'SH-763', 'uploads/covers/two_spans.png', '2026-02-02 15:59:36', '2026-02-03 15:48:25', 0),
-(260, '9784359943728', 'Handbook of Adventures', 'Jane Smith', 'Penguin', '2017', 10, 'A distinctive Children book titled \'Handbook of Adventures\'. Authored by Jane Smith, this book delves into the core concepts of children, offering valuable insights for readers.', 15, 15, 'KIDS-173', 'uploads/covers/understory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(261, '9785402875735', 'Essentials of Facts (2011 Edition)', 'David Wilson', 'HarperCollins', '2014', 8, 'A distinctive Reference book titled \'Essentials of Facts (2011 Edition)\'. Authored by David Wilson, this book delves into the core concepts of reference, offering valuable insights for readers.', 4, 4, 'REF-401', 'uploads/covers/a_million_to_one.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
-(262, '9787771159414', 'Advanced Motion', 'Sarah Brown', 'Penguin', '2022', 3, 'A distinctive Science book titled \'Advanced Motion\'. Authored by Sarah Brown, this book delves into the core concepts of science, offering valuable insights for readers.', 14, 13, 'SCI-590', 'uploads/covers/bad.png', '2026-02-02 15:59:36', '2026-02-03 15:15:52', 1),
-(263, '9785629060595', 'World of Facts', 'John Davis', 'OReilly', '2010', 8, 'A distinctive Reference book titled \'World of Facts\'. Authored by John Davis, this book delves into the core concepts of reference, offering valuable insights for readers.', 12, 12, 'REF-198', 'uploads/covers/beyond_the_ocean__door.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
-(264, '9784167151243', 'Discrete Functions Vol 1', 'Robert Johnson', 'Oxford Press', '2018', 6, 'A distinctive Mathematics book titled \'Discrete Functions Vol 1\'. Authored by Robert Johnson, this book delves into the core concepts of mathematics, offering valuable insights for readers.', 14, 14, 'MATH-210', 'uploads/covers/bigger&better.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(265, '9788622062498', 'Understanding Facts', 'James Williams', 'Pearson', '2012', 8, 'A distinctive Reference book titled \'Understanding Facts\'. Authored by James Williams, this book delves into the core concepts of reference, offering valuable insights for readers.', 14, 14, 'REF-201', 'uploads/covers/birds_of_a_feather.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
+(260, '9784359943728', 'Handbook of Adventures', 'Jane Smith', 'Penguin', '2017', 10, 'A distinctive Children book titled &#039;Handbook of Adventures&#039;. Authored by Jane Smith, this book delves into the core concepts of children, offering valuable insights for readers.', 20, 18, 'KIDS-173', 'uploads/covers/understory.png', '2026-02-02 15:59:36', '2026-02-08 07:53:13', 1),
+(261, '9785402875735', 'Essentials of Facts (2011 Edition)', 'David Wilson', 'HarperCollins', '2014', 8, 'A distinctive Reference book titled \'Essentials of Facts (2011 Edition)\'. Authored by David Wilson, this book delves into the core concepts of reference, offering valuable insights for readers.', 4, 3, 'REF-401', 'uploads/covers/a_million_to_one.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(262, '9787771159414', 'Advanced Motion', 'Sarah Brown', 'Penguin', '2022', 3, 'A distinctive Science book titled \'Advanced Motion\'. Authored by Sarah Brown, this book delves into the core concepts of science, offering valuable insights for readers.', 14, 13, 'SCI-590', 'uploads/covers/bad.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(263, '9785629060595', 'World of Facts', 'John Davis', 'OReilly', '2010', 8, 'A distinctive Reference book titled \'World of Facts\'. Authored by John Davis, this book delves into the core concepts of reference, offering valuable insights for readers.', 12, 12, 'REF-198', 'uploads/covers/beyond_the_ocean__door.png', '2026-02-02 15:59:36', '2026-02-08 07:55:38', 1),
+(264, '9784167151243', 'Discrete Functions Vol 1', 'Robert Johnson', 'Oxford Press', '2018', 6, 'A distinctive Mathematics book titled \'Discrete Functions Vol 1\'. Authored by Robert Johnson, this book delves into the core concepts of mathematics, offering valuable insights for readers.', 14, 13, 'MATH-210', 'uploads/covers/bigger&better.png', '2026-02-02 15:59:36', '2026-02-07 16:11:51', 1),
+(265, '9788622062498', 'Understanding Facts', 'James Williams', 'Pearson', '2012', 8, 'A distinctive Reference book titled \'Understanding Facts\'. Authored by James Williams, this book delves into the core concepts of reference, offering valuable insights for readers.', 14, 14, 'REF-201', 'uploads/covers/birds_of_a_feather.png', '2026-02-02 15:59:36', '2026-02-07 16:13:10', 1),
 (266, '9789910661391', 'Eternal Sea', 'James Davis', 'Scholastic', '2018', 1, 'A distinctive Fiction book titled \'Eternal Sea\'. Authored by James Davis, this book delves into the core concepts of fiction, offering valuable insights for readers.', 5, 5, 'FIC-887', 'uploads/covers/cherry.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1);
 INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publication_year`, `category_id`, `description`, `total_copies`, `available_copies`, `shelf_location`, `cover_image`, `created_at`, `updated_at`, `is_active`) VALUES
-(267, '9785162597567', 'Introduction to Knowledge (2015 Edition)', 'Emily Miller', 'OReilly', '2019', 2, 'A distinctive Non-Fiction book titled \'Introduction to Knowledge (2015 Edition)\'. Authored by Emily Miller, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 8, 7, 'NF-984', 'uploads/covers/debbie_berne.png', '2026-02-02 15:59:36', '2026-02-03 15:32:26', 1),
+(267, '9785162597567', 'Introduction to Knowledge (2015 Edition)', 'Emily Miller', 'OReilly', '2019', 2, 'A distinctive Non-Fiction book titled \'Introduction to Knowledge (2015 Edition)\'. Authored by Emily Miller, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 8, 8, 'NF-984', 'uploads/covers/debbie_berne.png', '2026-02-02 15:59:36', '2026-02-07 15:07:25', 1),
 (268, '9787301728443', 'The Comprehensive Knowledge Vol 1', 'Robert Davis', 'Cambridge', '2021', 2, 'A distinctive Non-Fiction book titled \'The Comprehensive Knowledge Vol 1\'. Authored by Robert Davis, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 12, 12, 'NF-603', 'uploads/covers/enchanted_to_meet_you.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (269, '9784569229070', 'Numbers of Proof (2016 Edition)', 'Robert Davis', 'Cambridge', '2025', 6, 'A distinctive Mathematics book titled \'Numbers of Proof (2016 Edition)\'. Authored by Robert Davis, this book delves into the core concepts of mathematics, offering valuable insights for readers.', 13, 13, 'MATH-427', 'uploads/covers/formula.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (270, '9785960429650', 'Essentials of Facts (2005 Edition)', 'John Jones', 'Penguin', '2012', 8, 'A distinctive Reference book titled \'Essentials of Facts (2005 Edition)\'. Authored by John Jones, this book delves into the core concepts of reference, offering valuable insights for readers.', 10, 10, 'REF-394', 'uploads/covers/green_witchcraft.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
@@ -422,7 +516,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (274, '9788728779252', 'Guide to Adventures Vol 2', 'Emily Brown', 'Springer', '2018', 10, 'A distinctive Children book titled \'Guide to Adventures Vol 2\'. Authored by Emily Brown, this book delves into the core concepts of children, offering valuable insights for readers.', 10, 10, 'KIDS-533', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (275, '9787589523778', 'Mastering Wealth', 'Alice Miller', 'Penguin', '2011', 9, 'A distinctive Self-Help book titled \'Mastering Wealth\'. Authored by Alice Miller, this book delves into the core concepts of self-help, offering valuable insights for readers.', 11, 11, 'SH-977', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (276, '9788221946415', 'Mastering Adventures (2006 Edition)', 'James Taylor', 'OReilly', '2014', 10, 'A distinctive Children book titled \'Mastering Adventures (2006 Edition)\'. Authored by James Taylor, this book delves into the core concepts of children, offering valuable insights for readers.', 6, 6, 'KIDS-894', 'uploads/covers/really_good.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(277, '9788643138392', 'Advanced Chemistry', 'Alice Taylor', 'Pearson', '2015', 3, 'A distinctive Science book titled \'Advanced Chemistry\'. Authored by Alice Taylor, this book delves into the core concepts of science, offering valuable insights for readers.', 3, 3, 'SCI-973', 'uploads/covers/success.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
+(277, '9788643138392', 'Advanced Chemistry', 'Alice Taylor', 'Pearson', '2015', 3, 'A distinctive Science book titled \'Advanced Chemistry\'. Authored by Alice Taylor, this book delves into the core concepts of science, offering valuable insights for readers.', 3, 3, 'SCI-973', 'uploads/covers/success.png', '2026-02-02 15:59:36', '2026-02-07 15:07:38', 1),
 (278, '9783976421282', 'Understanding Knowledge (2009 Edition)', 'Sarah Brown', 'Oxford Press', '2015', 2, 'A distinctive Non-Fiction book titled \'Understanding Knowledge (2009 Edition)\'. Authored by Sarah Brown, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 3, 3, 'NF-904', 'uploads/covers/time_machine.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (279, '9782738517152', 'Mastering Prose', 'Alice Taylor', 'Springer', '2019', 7, 'A distinctive Literature book titled \'Mastering Prose\'. Authored by Alice Taylor, this book delves into the core concepts of literature, offering valuable insights for readers.', 6, 6, 'LIT-676', 'uploads/covers/two_spans.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (280, '9786706591017', 'Introduction to Knowledge (2013 Edition)', 'Michael Brown', 'OReilly', '2012', 2, 'A distinctive Non-Fiction book titled \'Introduction to Knowledge (2013 Edition)\'. Authored by Michael Brown, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 5, 5, 'NF-923', 'uploads/covers/understory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
@@ -440,7 +534,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (292, '9787928139835', 'The Comprehensive Knowledge', 'David Moore', 'Springer', '2012', 2, 'A distinctive Non-Fiction book titled \'The Comprehensive Knowledge\'. Authored by David Moore, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 11, 11, 'NF-146', 'uploads/covers/man_in_the_woods.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (293, '9787199440022', 'Essentials of Knowledge', 'David Davis', 'Springer', '2012', 2, 'A distinctive Non-Fiction book titled \'Essentials of Knowledge\'. Authored by David Davis, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 8, 8, 'NF-159', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (294, '9780438269645', 'Digital Security Vol 5', 'John Moore', 'Scholastic', '2023', 4, 'A distinctive Technology book titled \'Digital Security Vol 5\'. Authored by John Moore, this book delves into the core concepts of technology, offering valuable insights for readers.', 5, 5, 'TECH-550', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(295, '9786332840357', 'Guide to Facts', 'James Miller', 'Scholastic', '2016', 8, 'A distinctive Reference book titled \'Guide to Facts\'. Authored by James Miller, this book delves into the core concepts of reference, offering valuable insights for readers.', 15, 15, 'REF-372', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
+(295, '9786332840357', 'Guide to Facts', 'James Miller', 'Scholastic', '2016', 8, 'A distinctive Reference book titled \'Guide to Facts\'. Authored by James Miller, this book delves into the core concepts of reference, offering valuable insights for readers.', 15, 15, 'REF-372', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-07 15:07:33', 1),
 (296, '9784232528886', 'The Art of Focus Vol 4', 'Robert Taylor', 'HarperCollins', '2020', 9, 'A distinctive Self-Help book titled \'The Art of Focus Vol 4\'. Authored by Robert Taylor, this book delves into the core concepts of self-help, offering valuable insights for readers.', 14, 14, 'SH-135', 'uploads/covers/really_good.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (297, '9789187558365', 'Robotics Design Vol 4', 'Sarah Brown', 'Springer', '2016', 4, 'A distinctive Technology book titled \'Robotics Design Vol 4\'. Authored by Sarah Brown, this book delves into the core concepts of technology, offering valuable insights for readers.', 14, 14, 'TECH-989', 'uploads/covers/success.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (298, '9782998043046', 'The Hidden Time (2012 Edition)', 'John Davis', 'Springer', '2021', 1, 'A distinctive Fiction book titled \'The Hidden Time (2012 Edition)\'. Authored by John Davis, this book delves into the core concepts of fiction, offering valuable insights for readers.', 12, 12, 'FIC-468', 'uploads/covers/time_machine.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
@@ -481,7 +575,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (333, '9782420654374', 'World of Knowledge Vol 3 (2024 Edition)', 'John Moore', 'Scholastic', '2015', 2, 'A distinctive Non-Fiction book titled \'World of Knowledge Vol 3 (2024 Edition)\'. Authored by John Moore, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 13, 13, 'NF-925', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (334, '9788267691100', 'Introduction to Adventures (2015 Edition)', 'James Wilson', 'Pearson', '2025', 10, 'A distinctive Children book titled \'Introduction to Adventures (2015 Edition)\'. Authored by James Wilson, this book delves into the core concepts of children, offering valuable insights for readers.', 6, 6, 'KIDS-114', 'uploads/covers/own_business.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (335, '9783393578416', 'Handbook of Adventures (2000 Edition)', 'John Smith', 'Wiley', '2015', 10, 'A distinctive Children book titled \'Handbook of Adventures (2000 Edition)\'. Authored by John Smith, this book delves into the core concepts of children, offering valuable insights for readers.', 15, 15, 'KIDS-221', 'uploads/covers/paradox.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
-(336, '9783969274143', 'Advanced Biology', 'Robert Davis', 'Scholastic', '2012', 3, 'A distinctive Science book titled \'Advanced Biology\'. Authored by Robert Davis, this book delves into the core concepts of science, offering valuable insights for readers.', 3, 1, 'SCI-682', 'uploads/covers/really_good.png', '2026-02-02 15:59:36', '2026-02-03 15:35:42', 1),
+(336, '9783969274143', 'Advanced Biology', 'Robert Davis', 'Scholastic', '2012', 3, 'A distinctive Science book titled \'Advanced Biology\'. Authored by Robert Davis, this book delves into the core concepts of science, offering valuable insights for readers.', 3, 3, 'SCI-682', 'uploads/covers/really_good.png', '2026-02-02 15:59:36', '2026-02-07 15:07:27', 1),
 (337, '9787726251127', 'The Comprehensive Facts', 'Robert Davis', 'OReilly', '2022', 8, 'A distinctive Reference book titled \'The Comprehensive Facts\'. Authored by Robert Davis, this book delves into the core concepts of reference, offering valuable insights for readers.', 4, 4, 'REF-365', 'uploads/covers/success.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (338, '9784589283167', 'Civilizations of War Vol 2', 'David Johnson', 'Pearson', '2012', 5, 'A distinctive History book titled \'Civilizations of War Vol 2\'. Authored by David Johnson, this book delves into the core concepts of history, offering valuable insights for readers.', 11, 11, 'HIST-363', 'uploads/covers/time_machine.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
 (339, '9780640525080', 'Algebra Design (2018 Edition)', 'Robert Williams', 'Springer', '2012', 6, 'A distinctive Mathematics book titled \'Algebra Design (2018 Edition)\'. Authored by Robert Williams, this book delves into the core concepts of mathematics, offering valuable insights for readers.', 13, 13, 'MATH-953', 'uploads/covers/two_spans.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
@@ -515,7 +609,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `author`, `publisher`, `publica
 (367, '9785758606125', 'Understanding Adventures Vol 2', 'John Davis', 'Oxford Press', '2021', 10, 'A distinctive Children book titled \'Understanding Adventures Vol 2\'. Authored by John Davis, this book delves into the core concepts of children, offering valuable insights for readers.', 6, 6, 'KIDS-336', 'uploads/covers/debbie_berne.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (368, '9785012855611', 'Thinking Leadership', 'James Brown', 'Pearson', '2017', 9, 'A distinctive Self-Help book titled \'Thinking Leadership\'. Authored by James Brown, this book delves into the core concepts of self-help, offering valuable insights for readers.', 15, 15, 'SH-696', 'uploads/covers/enchanted_to_meet_you.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (369, '9783433814791', 'Guide to Prose Vol 4', 'Jane Johnson', 'Springer', '2017', 7, 'A distinctive Literature book titled \'Guide to Prose Vol 4\'. Authored by Jane Johnson, this book delves into the core concepts of literature, offering valuable insights for readers.', 3, 3, 'LIT-754', 'uploads/covers/formula.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
-(370, '9780701232332', 'Introduction to Prose Vol 2', 'Emily Brown', 'HarperCollins', '2012', 7, 'A distinctive Literature book titled \'Introduction to Prose Vol 2\'. Authored by Emily Brown, this book delves into the core concepts of literature, offering valuable insights for readers.', 13, 13, 'LIT-730', 'uploads/covers/green_witchcraft.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
+(370, '9780701232332', 'Introduction to Prose Vol 2', 'Emily Brown', 'HarperCollins', '2012', 7, 'A distinctive Literature book titled \'Introduction to Prose Vol 2\'. Authored by Emily Brown, this book delves into the core concepts of literature, offering valuable insights for readers.', 13, 12, 'LIT-730', 'uploads/covers/green_witchcraft.png', '2026-02-02 15:59:36', '2026-02-08 07:57:02', 1),
 (371, '9784452400995', 'Golden Time', 'Bob Taylor', 'Oxford Press', '2011', 1, 'A distinctive Fiction book titled \'Golden Time\'. Authored by Bob Taylor, this book delves into the core concepts of fiction, offering valuable insights for readers.', 3, 3, 'FIC-794', 'uploads/covers/harry_potter.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (372, '9782425909809', 'The Theory of Cells', 'James Smith', 'Scholastic', '2023', 3, 'A distinctive Science book titled \'The Theory of Cells\'. Authored by James Smith, this book delves into the core concepts of science, offering valuable insights for readers.', 14, 14, 'SCI-516', 'uploads/covers/man_in_the_woods.png', '2026-02-02 15:59:36', '2026-02-03 14:24:39', 1),
 (373, '9783893454154', 'Handbook of Knowledge Vol 5', 'John Moore', 'Scholastic', '2010', 2, 'A distinctive Non-Fiction book titled \'Handbook of Knowledge Vol 5\'. Authored by John Moore, this book delves into the core concepts of non-fiction, offering valuable insights for readers.', 14, 14, 'NF-224', 'uploads/covers/memory.png', '2026-02-02 15:59:36', '2026-02-02 15:59:36', 1),
@@ -604,10 +698,42 @@ CREATE TABLE `issued_books` (
 INSERT INTO `issued_books` (`issue_id`, `book_id`, `user_id`, `issued_by`, `issue_date`, `due_date`, `return_date`, `fine_amount`, `fine_paid`, `status`) VALUES
 (5, 67, 8, 7, '2026-02-03', '2026-02-19', '2026-02-03', 0.00, 0, 'returned'),
 (6, 336, 8, 7, '2026-02-03', '2026-02-19', '2026-02-03', 0.00, 0, 'returned'),
-(7, 262, 8, 7, '2026-02-03', '2026-02-19', NULL, 0.00, 0, 'issued'),
-(8, 267, 8, 7, '2026-02-03', '2026-02-19', NULL, 0.00, 0, 'issued'),
-(9, 336, 11, 7, '2026-02-03', '2026-02-19', NULL, 0.00, 0, 'issued'),
-(10, 336, 8, 7, '2026-02-03', '2026-02-19', NULL, 0.00, 0, 'issued');
+(7, 262, 8, 7, '2026-02-03', '2026-02-19', '2026-02-07', 0.00, 0, 'returned'),
+(8, 267, 8, 7, '2026-02-03', '2026-02-19', '2026-02-07', 0.00, 0, 'returned'),
+(9, 336, 11, 7, '2026-02-03', '2026-02-19', '2026-02-07', 0.00, 0, 'returned'),
+(10, 336, 8, 7, '2026-02-03', '2026-02-19', '2026-02-07', 0.00, 0, 'returned'),
+(11, 298, 13, NULL, '2026-02-03', '2026-02-18', NULL, 0.00, 0, 'cancelled'),
+(12, 277, 13, 7, '2026-02-03', '2026-02-19', '2026-02-07', 0.00, 0, 'returned'),
+(13, 133, 13, NULL, '2026-02-03', '2026-02-18', NULL, 0.00, 0, 'cancelled'),
+(14, 295, 9, 7, '2026-02-04', '2026-02-20', '2026-02-07', 0.00, 0, 'returned'),
+(15, 260, 9, 7, '2026-02-04', '2026-02-20', '2026-02-04', 0.00, 0, 'returned'),
+(16, 260, 9, 7, '2026-02-04', '2026-02-20', '2026-02-07', 0.00, 0, 'returned'),
+(17, 261, 9, 7, '2026-02-04', '2026-02-20', '2026-02-07', 0.00, 0, 'returned'),
+(18, 277, 12, 7, '2026-02-04', '2026-02-20', '2026-02-07', 0.00, 0, 'returned'),
+(19, 250, 8, 7, '2026-01-01', '2026-01-15', '2026-02-07', 11.50, 0, 'returned'),
+(20, 251, 8, 7, '2026-01-05', '2026-01-20', '2026-02-07', 9.00, 0, 'returned'),
+(21, 252, 8, 7, '2026-01-10', '2026-01-25', '2026-02-07', 50.00, 1, 'returned'),
+(22, 253, 9, 7, '2026-01-01', '2026-01-15', '2026-02-07', 11.50, 0, 'returned'),
+(23, 254, 9, 7, '2026-01-05', '2026-01-20', '2026-02-07', 9.00, 1, 'returned'),
+(24, 255, 9, 7, '2026-01-10', '2026-01-25', '2026-02-07', 6.50, 1, 'returned'),
+(25, 250, 8, 7, '2026-02-01', '2026-02-03', '2026-02-08', 2.50, 1, 'returned'),
+(26, 251, 8, 7, '2026-02-01', '2026-02-04', '2026-02-07', 100.00, 1, 'returned'),
+(27, 252, 8, 7, '2026-02-01', '2026-02-05', NULL, 1.50, 0, 'overdue'),
+(28, 253, 9, 7, '2026-02-01', '2026-02-03', NULL, 2.50, 0, 'overdue'),
+(29, 254, 9, 7, '2026-02-01', '2026-02-04', NULL, 2.00, 0, 'overdue'),
+(30, 255, 9, 7, '2026-02-01', '2026-02-05', NULL, 1.50, 0, 'overdue'),
+(31, 260, 11, 7, '2026-02-01', '2026-02-03', NULL, 2.50, 0, 'overdue'),
+(32, 261, 11, 7, '2026-02-01', '2026-02-04', NULL, 2.00, 0, 'overdue'),
+(33, 262, 11, 7, '2026-02-01', '2026-02-05', NULL, 1.50, 0, 'overdue'),
+(34, 263, 12, 7, '2026-02-01', '2026-02-03', '2026-02-08', 2.50, 1, 'returned'),
+(35, 264, 12, 7, '2026-02-01', '2026-02-04', NULL, 2.00, 0, 'overdue'),
+(36, 265, 12, 7, '2026-02-01', '2026-02-05', '2026-02-07', 1.00, 1, 'returned'),
+(37, 261, 8, NULL, '2026-02-08', '2026-02-23', NULL, 0.00, 0, 'cancelled'),
+(38, 234, 8, 7, '2026-02-08', '2026-02-24', '2026-02-08', 0.00, 1, 'returned'),
+(39, 262, 8, NULL, '2026-02-08', '2026-02-23', NULL, 0.00, 0, 'cancelled'),
+(40, 123, 8, 7, '2026-02-08', '2026-02-24', '2026-02-08', 0.00, 1, 'returned'),
+(41, 260, 8, 7, '2026-02-08', '2026-02-24', NULL, 0.00, 0, 'issued'),
+(42, 370, 8, 7, '2026-02-08', '2026-02-24', NULL, 0.00, 0, 'issued');
 
 -- --------------------------------------------------------
 
@@ -631,7 +757,8 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`review_id`, `book_id`, `user_id`, `rating`, `review_text`, `is_featured`, `created_at`) VALUES
-(3, 260, 8, 5, 'nice book', 0, '2026-02-03 15:49:21');
+(3, 260, 8, 2, 'nice book', 0, '2026-02-04 06:57:54'),
+(4, 261, 8, 4, 'this is the best book i ever read.', 0, '2026-02-08 04:53:43');
 
 -- --------------------------------------------------------
 
@@ -661,6 +788,46 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`, `description`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `transactions`
+--
+
+DROP TABLE IF EXISTS `transactions`;
+CREATE TABLE `transactions` (
+  `transaction_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `issue_id` int(11) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `transaction_code` varchar(100) DEFAULT NULL,
+  `transaction_uuid` varchar(100) NOT NULL,
+  `status` enum('pending','completed','failed') DEFAULT 'pending',
+  `payment_method` enum('esewa','cash') DEFAULT 'cash',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`transaction_id`, `user_id`, `issue_id`, `amount`, `transaction_code`, `transaction_uuid`, `status`, `payment_method`, `created_at`) VALUES
+(3, 8, 21, 50.00, '000E5D4', 'FINE-6987573cf33ea-21-1770477372', 'completed', 'esewa', '2026-02-07 15:16:12'),
+(4, 9, 23, 9.00, 'CASH-369BD9E8', 'CASH-69876092175dc-23-1770479762', 'completed', 'cash', '2026-02-07 15:56:02'),
+(5, 9, 24, 6.50, 'CASH-761F8C94', 'CASH-698760959b5bf-24-1770479765', 'completed', 'cash', '2026-02-07 15:56:05'),
+(7, 12, 36, 1.00, 'CASH-A0395734', 'CASH-69876496b6e99-36-1770480790', 'completed', 'cash', '2026-02-07 16:13:10'),
+(8, 8, 26, 100.00, '000E5DE', 'FINE-698765636df00-26-1770480995', 'completed', 'esewa', '2026-02-07 16:16:35'),
+(9, 8, 25, 2.00, NULL, 'FINE-6988163f6cefb-25-1770526271', 'pending', 'cash', '2026-02-08 04:51:11'),
+(10, 8, 25, 2.00, NULL, 'FINE-6988174b67084-25-1770526539', 'pending', 'cash', '2026-02-08 04:55:39'),
+(11, 8, 25, 2.50, NULL, 'FINE-69881cb28325d-25-1770527922', 'pending', 'cash', '2026-02-08 05:18:42'),
+(12, 8, 25, 2.50, NULL, 'FINE-6988313e9c2cd-25-1770533182', 'pending', 'cash', '2026-02-08 06:46:22'),
+(13, 8, 27, 1.50, NULL, 'FINE-69883517568d3-27-1770534167', 'pending', 'cash', '2026-02-08 07:02:47'),
+(14, 8, 25, 2.50, NULL, 'FINE-6988366fe36fb-25-1770534511', 'pending', 'cash', '2026-02-08 07:08:31'),
+(15, 8, 27, 1.50, NULL, 'FINE-69883d30611aa-27-1770536240', 'pending', 'cash', '2026-02-08 07:37:20'),
+(16, 8, 25, 2.50, NULL, 'FINE-698841096babd-25-1770537225', 'pending', 'cash', '2026-02-08 07:53:45'),
+(17, 12, 34, 2.50, 'CASH-00A92EC1', 'CASH-6988417a4456b-34-1770537338', 'completed', 'cash', '2026-02-08 07:55:38'),
+(18, 8, 25, 2.50, 'CASH-CB8676E4', 'CASH-698841b0afca2-25-1770537392', 'completed', 'cash', '2026-02-08 07:56:32');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -685,11 +852,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `phone`, `password`, `department`, `class`, `role`, `is_active`, `created_at`, `last_login`, `remember_token`) VALUES
-(7, 'admin', 'admin@library.com', '', '$2y$10$OnLTO/qsow.Ky7a9as/67ODW9GyRLEZdf.VFs9vqOq9aRB/Wj1VCO', NULL, NULL, 'admin', 1, '2026-02-02 15:16:39', '2026-02-03 15:51:39', '$2y$10$eo4zh9Ty3YwJjK72himtOOwXTBme4uNd6/mt1KQgnIzna4uzdEtcO'),
-(8, 'user', 'user@library.com', '9800000000', '$2y$10$30qdLptnVoE9/vytC/djEe0qPfajAz9RONA5wnHCYEjSKs64Mia82', 'Physical Science', 12, 'student', 1, '2026-02-02 15:28:33', '2026-02-03 15:48:40', '$2y$10$bK4zADBrOgpZ1fydTH0tX.IsOElAM1PON7wQXuv30..KSz.D0IloO'),
-(9, 'user', 'user@gmail.com', '9800000000', '$2y$10$BgDqYU6ocxQGImI/J9es0udd0SN.GPPcVxuY9sUCzouIjBy4hBk9y', 'Physical Science', 12, 'student', 1, '2026-02-02 16:02:11', '2026-02-03 14:21:55', NULL),
+(7, 'admin', 'admin@library.com', '', '$2y$10$OnLTO/qsow.Ky7a9as/67ODW9GyRLEZdf.VFs9vqOq9aRB/Wj1VCO', NULL, NULL, 'admin', 1, '2026-02-02 15:16:39', '2026-02-08 07:59:00', '$2y$10$eo4zh9Ty3YwJjK72himtOOwXTBme4uNd6/mt1KQgnIzna4uzdEtcO'),
+(8, 'user', 'user@library.com', '9800000000', '$2y$10$30qdLptnVoE9/vytC/djEe0qPfajAz9RONA5wnHCYEjSKs64Mia82', 'Physical Science', 12, 'student', 1, '2026-02-02 15:28:33', '2026-02-08 07:52:01', '$2y$10$Lr6fIdNxqnEaVxMlcXaV1OsboDvwKDJFBuLnXGxc2yce5xNU2tBzW'),
+(9, 'user', 'user@gmail.com', '9800000000', '$2y$10$BgDqYU6ocxQGImI/J9es0udd0SN.GPPcVxuY9sUCzouIjBy4hBk9y', 'Physical Science', 12, 'student', 1, '2026-02-02 16:02:11', '2026-02-04 07:30:42', NULL),
 (11, 'Royan Baidar', 'bccandd78@gmail.com', '', '$2y$10$Ajc69OL2Bra/NgJJb24E2eq8eY2ycjIeOdOvCyHETz59INkDyjtx2', 'Science', 12, 'student', 1, '2026-02-03 15:25:44', '2026-02-03 15:26:03', NULL),
-(12, 'Suman Neupane', 'suman01@gmail.com', '9841393762', '$2y$10$.wINpGaHtpXPc810eVYnq.11fnRBTAjW.FCb8Xru8pxkJe7ESvpQm', 'Science', 12, 'student', 1, '2026-02-03 15:36:06', '2026-02-03 15:37:13', '$2y$10$Rq7PRPvPq5ujIa3qCsQhFu1NdySPrDmoyTAP1tKRjIokmLK.sc17q');
+(12, 'Suman Neupane', 'suman01@gmail.com', '9841393762', '$2y$10$.wINpGaHtpXPc810eVYnq.11fnRBTAjW.FCb8Xru8pxkJe7ESvpQm', 'Science', 12, 'student', 1, '2026-02-03 15:36:06', '2026-02-03 15:37:13', '$2y$10$Rq7PRPvPq5ujIa3qCsQhFu1NdySPrDmoyTAP1tKRjIokmLK.sc17q'),
+(13, 'Ram', 'rambahadur@gmail.com', '', '$2y$10$PhXza3E7jGoWDvmqOUedBemEVG7LO0fYhELV.HEkyIoE3Do15WJ2C', 'Management', 12, 'student', 1, '2026-02-03 15:54:34', '2026-02-03 15:54:47', NULL),
+(14, 'Rohit Satyal', 'rohitsatyalv333@gmail.com', '', '$2y$10$B5AMeIZvvSo4O5/pvyWrGeG.a/frGzUaxUsByXQuNPzOmLR1LTq4i', 'Science', 12, 'student', 1, '2026-02-08 06:38:33', '2026-02-08 06:38:43', NULL);
 
 --
 -- Indexes for dumped tables
@@ -745,6 +914,14 @@ ALTER TABLE `system_settings`
   ADD PRIMARY KEY (`setting_key`);
 
 --
+-- Indexes for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD PRIMARY KEY (`transaction_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `issue_id` (`issue_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -760,7 +937,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=168;
 
 --
 -- AUTO_INCREMENT for table `books`
@@ -778,19 +955,25 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `issued_books`
 --
 ALTER TABLE `issued_books`
-  MODIFY `issue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `issue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `transactions`
+--
+ALTER TABLE `transactions`
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
@@ -821,6 +1004,13 @@ ALTER TABLE `issued_books`
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`issue_id`) REFERENCES `issued_books` (`issue_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

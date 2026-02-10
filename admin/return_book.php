@@ -13,7 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['return_book'])) {
     }
 
     $issue_id = (int) $_POST['issue_id'];
-    $fine_paid = isset($_POST['fine_paid']) ? 1 : 0;
+    // Automated fine collection - if fine exists, it's considered paid via cash on return
+    $fine_paid = 1;
 
     try {
         // Get issue details
@@ -32,12 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['return_book'])) {
         }
 
         // Calculate fine
+        // Calculate Fine (using DATEDIFF logic for consistency)
         $due_date = new DateTime($issue['due_date']);
         $today = new DateTime();
         $fine_amount = 0;
 
-        if ($today > $due_date) {
-            $days_overdue = $today->diff($due_date)->days;
+        // If today is past the due date (ignoring time)
+        if ($today->format('Y-m-d') > $due_date->format('Y-m-d')) {
+            $diff = $today->diff($due_date);
+            $days_overdue = (int)$diff->days;
+            // Ensure at least 1 day if it's past the due date but diff->days is 0 (unlikely with Y-m-d comparison but safer)
+            if ($days_overdue === 0) $days_overdue = 1;
             $fine_amount = $days_overdue * $fine_per_day;
         }
 
@@ -59,6 +65,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['return_book'])) {
 
         // Auto-Reactivate when stock returns
         $pdo->prepare("UPDATE books SET is_active = 1 WHERE book_id = ?")->execute([$issue['book_id']]);
+
+        // Log automatic cash fine payment
+        if ($fine_amount > 0) {
+            $transaction_uuid = uniqid('CASH-') . '-' . $issue_id . '-' . time();
+            $transaction_code = 'CASH-' . strtoupper(substr(md5($transaction_uuid), 0, 8));
+
+            $stmt = $pdo->prepare("
+                INSERT INTO transactions (user_id, issue_id, amount, transaction_uuid, transaction_code, status, payment_method) 
+                VALUES (?, ?, ?, ?, ?, 'completed', 'cash')
+            ");
+            $stmt->execute([$issue['user_id'], $issue_id, $fine_amount, $transaction_uuid, $transaction_code]);
+        }
 
         $pdo->commit();
 
@@ -114,7 +132,7 @@ require_once '../includes/header.php';
             <div class="flex items-center gap-2">
                 <div class="relative">
                     <input type="text" id="searchInput" placeholder="Search..."
-                        class="form-control pl-10 py-2 w-64"
+                        class="form-control pl-10 py-2 w-full sm:w-64"
                         onkeyup="filterTable('issuedTable', 'searchInput')">
                     <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 </div>
@@ -151,7 +169,7 @@ require_once '../includes/header.php';
 
         <!-- Issued Books Table -->
         <div class="stat-card" data-aos="fade-up">
-            <div class="overflow-x-auto">
+            <div class="data-table-container">
                 <table class="data-table" id="issuedTable">
                     <thead>
                         <tr>
@@ -253,10 +271,9 @@ require_once '../includes/header.php';
                     <span class="text-red-700 dark:text-red-300 font-medium">Fine Amount</span>
                     <span class="text-2xl font-bold text-red-600" id="return_fine"><?php echo CURRENCY_SYMBOL; ?> 0.00</span>
                 </div>
-                <label class="flex items-center gap-2 mt-3 cursor-pointer">
-                    <input type="checkbox" name="fine_paid" class="w-4 h-4 accent-green-600">
-                    <span class="text-sm text-red-700 dark:text-red-300">Fine has been collected</span>
-                </label>
+                <p class="text-xs text-red-700 dark:text-red-300 mt-2 italic">
+                    <i class="fa-solid fa-circle-info mr-1"></i> Fine will be automatically marked as paid.
+                </p>
             </div>
 
             <div class="flex gap-3">

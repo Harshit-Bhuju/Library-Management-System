@@ -6,6 +6,53 @@
 
 require_once __DIR__ . '/../config/db.php';
 
+/**
+ * Check for Remember Me cookie and restore session
+ */
+function checkRememberMe()
+{
+    global $pdo;
+
+    // If already logged in, no need to check
+    if (isLoggedIn()) return;
+
+    // Check if remember_me cookie exists
+    if (isset($_COOKIE['remember_me'])) {
+        $cookieValue = $_COOKIE['remember_me'];
+        $parts = explode(':', $cookieValue);
+
+        if (count($parts) === 2) {
+            $userId = (int)$parts[0];
+            $token = $parts[1];
+
+            try {
+                $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ? AND is_active = 1");
+                $stmt->execute([$userId]);
+                $user = $stmt->fetch();
+
+                if ($user && $user['remember_token'] && password_verify($token, $user['remember_token'])) {
+                    // Token is valid, restore session
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['last_activity'] = time();
+
+                    // Optional: Log activity
+                    logActivity('login', 'User logged in via Remember Me');
+                }
+            } catch (Exception $e) {
+                error_log("Remember Me error: " . $e->getMessage());
+            }
+        }
+    }
+}
+
+// Initialize session restoration if needed
+if (session_status() !== PHP_SESSION_NONE) {
+    checkRememberMe();
+}
+
 // ======================================
 // INPUT SANITIZATION
 // ======================================
